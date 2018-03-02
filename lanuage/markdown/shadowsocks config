@@ -1,0 +1,29 @@
+#**shadowsocks config**
+
+1. **install** 
+	* `apt install python-pip`
+	`pip install shadowsocks`
+	* `apt install shadowsocks`
+1. **sslocal**
+	{
+	"server":"服务器的ip",
+	"server_port":19175,
+	"local_address":"127.0.0.1",
+	"local_port":1080,
+	"password":"密码",
+	"timeout":300,
+	"method":"aes-256-cfb",
+"	fast_open":false
+}
+1. **privoxy**
+	`/etc/privoxy/config`
+	`+1336  forward-socks5   /               127.0.0.1:1080 .`
+	`+780    listen-address  127.0.0.1:8118`
+1. **startup**
+	`service privoxy restart`
+	`sslocal -c $(config file path)`
+1. **autostartup**
+	edit /etc/rc.local
+1. **error**
+	fail **502** page;
+	a stupid mistake because i enter a wrong paswd

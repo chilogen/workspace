@@ -1,0 +1,5 @@
+K题：max应设为long long而不是int
+F题：=号打成==
+M题：困的时候要睡觉a[x].sum=(a[x].sum+(a[x].right-a[x].left+1)*c)%q;
+E题：
+C题：注意常量运算

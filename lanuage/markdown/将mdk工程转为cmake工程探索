@@ -1,0 +1,108 @@
+#**将mdk工程转为cmake工程**
+>os:ubuntu 16.04
+
+ - cmake 基本命令
+ 
+	 `add_executable($(project) $(source))` 将source 编译成可执行文件 project
+
+	`add_library($(libname) shared $source)` 将source编译成libname动态库，没有shared选项则编译成静态库
+
+	`add_subdirectory(dir)` 到dir里寻找CMakeLists.txt
+
+	`include_directories(dir)` 到dir里寻找头文件
+
+	`target_link_libraries(target1 target2)`target1依赖于target2
+
+ - 组织内容
+ 
+ 原子战舰版提供的跑马灯例程中的文件并不全部需要，通过分析依赖关系，(链接地址)。
+ 新建文件夹，目录结构：
+
+|初级目录(led)|||
+|:------:|:--------:|:--------:|
+|share|src|include|
+|库文件|主程序|头文件|探索
+
+
+-  编写CMakeLists.txt
+
+> led/CMakeLists.txt
+> `project(led)
+include_directories(include)
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+set(CMAKE_C_COMPILER /usr/bin/arm-none-eabi-gcc)
+add_subdirectory(share)
+add_subdirectory(src)`
+
+
+----------
+> led/shared/CMakeLists.txt
+> `add_library(core core_cm3.c)
+add_library(delay delay.c)
+add_library(led led.c)
+add_library(misc misc.c)
+add_library(stm32f10x_gpio stm32f10x_gpio.c)
+add_library(stm32f10x_it stm32f10x_it.c)
+add_library(stm32f10x_rcc stm32f10x_rcc.c)
+add_library(stm32f10x_usart stm32f10x_usart.c)
+add_library(sys sys.c)
+add_library(system_stm32f10x system_stm32f10x.c)
+add_library(usart usart.c)
+target_link_libraries(sys stm32f10x)
+target_link_libraries(delay sys)
+target_link_libraries(usart sys)
+target_link_libraries(led sys)
+
+
+----------
+>led/src/CMakeLists.txt
+>`add_executable(led.hex main.c)
+target_link_libraries(led.hex sys delay led usart core misc stm32f10x_gpio stm32f10x_rcc stm32f10x_usart stm32f10x_it system_stm32f10x)`
+
+ - 最后
+`mkdir build&&cd build&&cmake ..&&make`
+.............报错
+
+
+----------
+一号错误：
+`include/stm32f10x.h:96:3: error: #error "Please select first the target STM32F10x device used in your application (in stm32f10x.h file)"#error "Please select first the target STM32F10x device used in your application (in stm32f10x.h file)"`
+
+####打开stm32f10x.h,定位到96行，发现stm32f10x.h有芯片选型的功能，stm32f103zet的选项在70行，删掉注释，get！
+----------
+
+二号错误
+
+`sys.c:33:7: error: expected '(' before 'void' __asm void MSR_MSP(u32 addr)`
+ 
+c内嵌汇编出错... 据说在mdk下也会报错，但可以忽略，不管，先把它改了。
+错误代码块：
+`__asm void MSR_MSP(u32 addr)
+{
+    MSR MSP, r0                         //set Main Stack value
+    BX r14
+}`
+改成有分号的写法：
+`void MSR_MSP(u32 addr)
+{
+    __ASM volatile("MSR MSP, r0");                      //set Main Stack value
+    __ASM volatile("BX r14");
+}`
+
+get！
+
+----------
+
+三号错误
+
+`/tmp/ccZtObe3.s: Assembler messages:
+/tmp/ccZtObe3.s:25: Error: selected processor does not support `wfi' in ARM mode
+/tmp/ccZtObe3.s:43: Error: selected processor does not support `cpsid i' in ARM mode
+/tmp/ccZtObe3.s:61: Error: selected processor does not support `cpsie i' in ARM mode
+/tmp/ccZtObe3.s:81: Error: selected processor does not support requested special purpose register -- `msr MSP,r0'
+`
+
+####google之，还是芯片型号问题，果然还是配置难。
+----------
+>一晚上成果，明天再说

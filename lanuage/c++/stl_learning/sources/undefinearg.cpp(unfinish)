@@ -1,0 +1,87 @@
+/*what is the mean of ... in c&&c++?
+* it used for undefined arguments
+*/
+
+/*c style
+* must include stdarg.h
+* init an va_list obj
+* use va_start(obj,parameter)	to let obj point to parameter
+* then use va_arg(obj,value_type)	to get the argument an make arg++
+* last use va_end(obj) to	make arg point to NULL
+
+#include <stdio.h>
+#include <stdarg.h>
+void print(int n,...)
+{
+	int i,m;
+	va_list obj;
+	va_start(obj,n);
+	for(i=0;i<n;i++)
+	{
+		m=va_arg(obj,int);
+		printf("%d\n",m);
+	}
+	va_end(obj);
+}
+int main()
+{
+	print(5,1,2,3,4,5);
+	return 0;
+}
+*/
+
+
+/*c++ style
+* in c++,we have many ways to unfload the parameter
+*
+*
+*
+
+//way1,use recursively
+
+#include <bits/stdc++.h>
+using namespace std;
+void way1()
+{
+	//do nothing, just for overload function
+}
+template<class T,class ...arg>
+void way1(T now_parameter, arg... remain_parameter)
+{
+	cout<<now_parameter<<endl;
+	way1(remain_parameter...);
+}
+int main()
+{
+	way1("asd",1,1.1,'a');
+	return 0;
+}
+//way1 end
+
+
+//way2,use comma expression
+//the two expression on the both sides of comma have the same priority
+#include <bits/stdc++.h>
+using namespace std;
+
+template<class T>
+void way2(T arg)
+{
+	cout<<arg<<endl;
+}
+template<class ...Arg>
+void expend(Arg... arg)
+{
+	int a[]={(way2(arg),0)...};
+}
+int main()
+{
+	expend(1,1000,"asd",'f');
+	return 0;
+}
+//way2 end
+
+//way3
+*/
+#include <bits/srdc++.h>
+using namespace std;

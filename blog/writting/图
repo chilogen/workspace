@@ -1,0 +1,34 @@
+# 图的概念
+
+* ***导出子图---induced subgraphs***
+```
+Formally, let G = (V, E) be any graph, and let S ⊂ V be any subset of vertices of G.
+Then the induced subgraph G[S] is the graph whose vertex set is S and whose edge set
+ consists of all of the edges in E that have both endpoints in S---------(wikipedia)
+```
+导出子图是由原图中的一个**点子集V** 和所有**两个端点都是V中点的边集E**构成的子图
+
+---
+
+* **导出路径---induced path**
+```
+In the mathematical area of graph theory, an induced path in an undirected graph G is
+a path that is an induced subgraph of G. That is, it is a sequence of vertices in G
+such that each two adjacent vertices in the sequence are connected by an edge in G,
+and each two nonadjacent vertices in the sequence are not connected by any edge in G.
+-----------------------------------------------------------------------  -(wikipedia)
+```
+在图G中的一条导出路径上任意两个相连点都由G中的一条边相连，任意两个不相连点都没有任一条  
+G中的边将它们相连。
+
+---
+
+* **导出匹配----induced matching**
+```
+A matching in a graph is a set of edges, no two of which
+meet a common vertex. An induced matching M in a graph G is
+a matching where no two edges of M are joined by an edge of G. 
+```
+一个匹配是指一个图G的一个边集，边集中任意两条边都没有公共顶点，  
+导出匹配也是是图G中一个边集，除了满足匹配的性质外，任意两条边都  
+没有一条G中的边将它们直接相连

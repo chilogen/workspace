@@ -1,0 +1,45 @@
+function ima=partition(x,mask,sample)
+    v=rand(240,320,3);
+    ima=x;
+    v(:,:,1)=mask;
+    v(:,:,2)=mask;
+    v(:,:,3)=mask;
+    mask=uint8(mask);
+    i=x.*mask;
+    g=mat2gray(i);
+    s=resort(sample);
+    for i=1:240
+        for j=1:320
+        if g(i,j,1)~=0 | g(i,j,2)~=0 |g(i,j,3)~=0
+            if found(g(i,j,1),s,0,7696)==1 ima(i,j,:)=0; ima(i,j,1)=255;
+            else ima(i,j,:)=0; ima(i,j,2)=255;
+            end
+        end
+        end
+    end
+end
+function s=resort(sample)
+    s=rand(7696,2);
+    s(:,1)=sample(:,1);
+    s(:,2)=sample(:,5);
+    for i=1:7696
+        for j=i:7696
+            if s(i,1)<s(j)
+                t=s(i,1);
+                s(i,1)=s(j,1);
+                s(j,1)=t;
+                t=s(i,2);
+                s(i,2)=s(j,2);
+                s(j,2)=t;
+            end
+        end
+    end
+end
+function re=found(f,s,ranges,rangee)
+    i=fix((ranges+rangee)/2);
+    if abs(s(i,1)-f)<0.0005 re=s(i,2);
+    elseif s(i,1)<f re=found(f,s,i,rangee);
+    elseif s(i,1)>f re=found(f,s,ranges,i);
+    elseif s(i,1)==f re=s(i,2);
+    end
+end

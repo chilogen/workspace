@@ -1,0 +1,111 @@
+%%%%% 题目5
+% [x,y]=meshgrid(0:0.1:2);  %%% 区域剖分
+% f = y.^2-x;               %%% 函数一阶导
+% d = sqrt(1+f.^2);         %%% 梯度长度
+% px = 1./d; py = f./d;     %%% 梯度单位化
+% quiver(x,y,px,py)         %%% 用quiver绘制向量场
+% 
+% [x,y]=meshgrid(0:0.1:2);  %%% 区域剖分
+% f = x.*y+x.^3;               %%% 函数一阶导
+% d = sqrt(1+f.^2);         %%% 梯度长度
+% px = 1./d; py = f./d;     %%% 梯度单位化
+% quiver(x,y,px,py)         %%% 用quiver绘制向量场
+
+
+%%%%% 题目6(即课本例7.8)
+[x,y] = meshgrid(-2:0.2:2);   %%%% 离散[-1 1] x  [-1 1]区域
+D1 = sqrt((x+1).^2+y.^2).^3 +eps;  %%% 场强公式中的分母，eps是为并避免分母为0
+D2 = sqrt((x-1).^2+y.^2).^3 +eps;  %%% 场强公式中的分母，eps是为并避免分母为0
+Ex=(x+1)./D1+(x-1)./D2;
+Ey=y./D1+y./D2;              %%% (x,y)点， x-, y-方向上的场强
+E = sqrt(Ex.^2+Ey.^2) +eps;  %%% 场强大小
+Ex = Ex./E; Ey = Ey./E;      %%% 单位化每点出的场强
+% quiver(x,y,-Ex,-Ey);           %%% 绘羽箭图
+axis([-2 2 -2 2]); hold on
+
+t =linspace(0,2*pi,50);
+xt = 0.1*cos(t); yt = 0.1*sin(t); 
+plot([-1,1],[0,0],'r+',xt+1,yt,'b',xt-1,yt,'b')
+streamline(x,y,Ex,Ey,xt,yt)
+
+
+xlabel('K');
+ylabel('$${\|x^*-\hat{x}\|_2}$$','Interpreter','LaTex');
+
+%%%%% 题目7.1
+% function z = fun(x,y)  %%% 这个M文件必须要写，这是使用ode23的关键
+% z = x+y; 
+% 
+% ode23('fun',[0,2],0)
+% %%%%% 题目7.2
+% function z = fun(x,y)  %%% 这个M文件必须要写，这是使用ode23的关键
+% z = x-y; 
+% 
+% ode23('fun',[0,2],0)
+% %%%%% 题目7.3
+% function z = fun(x,y)  %%% 这个M文件必须要写，这是使用ode23的关键
+% z = 4*x-2*y; 
+% 
+% ode23('fun',[0,2],0)
+
+
+%%%%% 题目8(同例子7.4)
+% function  z= fun(x,y)    %%%% 写 常微分方程右端项的M文件
+% z(1,:) =y(2);
+% z(2,:) = -3*sin(y(1));
+
+% [t,theta] = ode23('fun',[0 2], [0.4 0]);  %%% 调用ode23命令
+
+% figure(1); plot(t,theta,t,theta,'o');    %%% 绘制摆线图 
+% R=3.2; alpha = theta(:,1); 
+% x = R*sin(alpha); % y = R*cos(alpha);
+% X = [0 0]; Y = [0,-3.5];
+% figure(2); plot(x,-y,x,-y,'o',X,Y,'linewidth',2)
+
+%%%%% 题目9(同例子7.4,只不过函数多了一项而已
+% function  z= fun(x,y)    %%%% 写 常微分方程右端项的M文件
+% z(1,:) =y(2);
+% z(2,:) = -3*sin(y(1))-0.01*y(2);  %%%与题目8仅仅在这一句不同
+
+% [t,theta] = ode23('fun',[0 2], [0.4 0]);  %%% 调用ode23命令
+% 
+% figure(1); plot(t,theta,t,theta,'o');    %%% 绘制摆线图 
+% R=3.2; alpha = theta(:,1); 
+% x = R*sin(alpha); y = R*cos(alpha);
+% X = [0 0]; Y = [0,-3.5];
+% figure(2); plot(x,-y,x,-y,'o',X,Y,'linewidth',2)
+% 
+
+%%%%% 题目10(同例子7.4,借鉴8,9两题目即可）
+
+
+% [x,y]=meshgrid(-2:.1:2);    %%%%打网格
+% r1=sqrt((x+1).^2+y.^2)+eps;
+% r2=sqrt((x-1).^2+y.^2)+eps;
+% z=1./r1+1./r2;
+% [px,py]=gradient(z);      %%% 计算梯度
+% axis([-2,2,-2,2])
+% 
+% t=linspace(-pi,pi,44); 
+% xt=-1+0.1*cos(t);yt=0.1*sin(t);  %%%% 代表点电荷的小圆圈,同事代表流线的起点
+% plot([-1,1],[0,0],'r+'),hold on  %%%% 点电荷位置 +号
+% streamline(x,y,-px,-py,xt,yt)    %%%% 用流线绘制坐边
+% streamline(x,y,-px,-py,-xt,yt) %%%% 用流线绘制右边
+
+
+%%%%%% 
+% load wind
+% [sx,sy,sz] = meshgrid(80,20:5:50,0:5:15);
+% streamline(x,y,z,u,v,w,sx,sy,sz)
+
+% load wind 
+% [sx,sy,sz] = meshgrid(80,20:10:50,0:5:15);
+% streamribbon(x,y,z,u,v,w,sx,sy,sz)
+
+
+% load wind 
+% [sx,sy,sz] = meshgrid(80,20:8:50,0:5:15);
+% streamtube(x,y,z,u,v,w,sx,sy,sz);
+% view(3); shading interp %%%% 上色，表面处理
+
+

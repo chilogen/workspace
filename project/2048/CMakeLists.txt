@@ -1,0 +1,11 @@
+project(2048)
+add_library(p p.c)
+add_library(action action.c)
+add_library(add add.c)
+add_library(show show.c)
+add_library(judge judge.c)
+add_executable(2048 2048.c)
+target_link_libraries(2048 p show)
+target_link_libraries(action add)
+target_link_libraries(p action judge show)
+

@@ -1,0 +1,82 @@
+clc;
+clear;
+close all
+%%%%%%%% 题目 1
+% x = 1:5;  P = poly(x)   %%%%%  考察对 poly 命令的掌握
+% t = 0.9:0.1:5.1; y = polyval(P,t);%%%% 考察对polyval的掌握
+% plot(t,y,x,zeros(5,1),'r*'); grid on %%%绘图，并标记解点
+
+
+%%%%%%%% 题目 2
+% function R=NRoot(n)
+% if nargin == 0; n=5; end %%% 默认：五次方程单位根
+% P= zeros(n+1,1); P(1) = 1; P(n+1) = 1;  %%%设计多项式系数
+% R= roots(P);  %%%用roots命令求根
+% X= real(R); Y = imag(R);  %%%% 求根的实部和虚部
+% 
+% t = linspace(0,2*pi,100); x = cos(t); y =sin(t);
+% plot(x,y,X,Y,'r*');  %%%%绘制单位圆，标记根
+
+
+
+%%%%%%%% 题目 3 找系数并存为向量，用roots求根
+% P1 = [4 -1 -5]; R1 = roots(P1)    
+% P2 = [1 -1 0  0 -10]; R2 = roots(P2)    
+% P3 = [1  0 0 0 0 1 -1]; R3 = roots(P3)    
+
+
+%%%%%%%% 题目 4, 这个题目不要去matlab编程，自己看看能不能分析出sum, prod的值
+%%%%%%显然用所求多项式为： x^2-2x+4, 由韦达定理易知两根之和，两根之积
+% R=roots([1 -2 4]); sum(R),prod(R)
+
+%%%%%%%% 题目 5% 
+%%%%%% 同题目 4, 这个题目不要去matlab编程，由多项式的韦达定理易知
+%%%%%% 任意两根之积极再求和，与第三项有关，所以是 11
+
+%%%%%%%% 题目 6
+% P  = [1 -1 -1 1];  R=roots(P) %%%%% 求多项式根
+% dP = [3 -2 -1];   dR=roots(dP)  %%%% 稳定点即导函数的0点
+% d2P= [6 -2];     d2R=roots(d2P)  %%%% 拐点即二阶导函数的0点
+% x  = -1.2:0.1:1.5; y = polyval(P,x); 
+% yR = polyval(P,R);  %%%% 根
+% ydR= polyval(P,dR);%%%% 稳定点
+% yd2R = polyval(P,d2R);%%%% 拐点
+% plot(x,y,R,yR,'r*',dR,ydR,'bo',d2R,yd2R,'ks'); grid on
+% legend('曲线','根','稳定点','拐点')
+
+
+%%%%%%%% 题目 7
+% E = input('the E<1 is number ');  
+% f = inline('x-pi/4-0.6*sin(x)');  %%%所求函数
+% x = fzero(f,[-10,10]);  %% fzero命令求根
+% fplot(f,[-10,10]);grid on; hold on %%% 绘图
+% plot(x,f(x),'*r'); %%% 标记根
+
+
+%%%%%%%% 题目 8
+% f = inline('sin(x)-6*x-5'); fplot(f,[-10,10]); grid on
+% x = fzero(f,[-10,10])
+
+% f = inline('cos(x).^2+6'); fplot(f,[-10,10]); grid on; %%%% 显然物价
+
+% f = inline('log(x)+x.^2-3'); fplot(f,[0.1,2]); grid on
+% x = fzero(f,[0.1,2])
+
+%%%%%%%% 题目 9
+% f = inline('sin(x)-cos(x)'); fplot(f,[-10,10]); grid on
+% x = fzero(f,[0.,1])
+
+% %%%%%%%% 题目 10
+% f = inline('tan(x)-x'); fplot(f,[-5,5]); grid on
+% x = fzero(f,[2,4.6])
+
+%%%%%%%% 题目 11
+% f = inline('exp(-x)-sin(x)'); fplot(f,[-1,10]); grid on
+% x = fzero(f,[0,2])
+
+%%%%%%%% 题目 15
+%%% 分别求距离 AH+BH+CH
+A = [0 0]; B=[8 0]; C = [5 6];
+f = inline('sqrt(x(1).^2+x(2).^2)+sqrt((x(1)-8).^2+x(2).^2)+sqrt((x(1)-5).^2+(x(2)-6).^2)');
+[x,y] = fminsearch(f,[0 0]) %%%% 多元函数求极小
+fill([0 8 5 0],[0 0 6 0],'g'); hold on ; plot(x(1),x(2),'r*')

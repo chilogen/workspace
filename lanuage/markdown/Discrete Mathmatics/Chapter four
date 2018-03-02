@@ -1,0 +1,78 @@
+# Chapter Four
+##<center>Number Theory and Cryptography</center>
+
+###4.1-Divisibility and Modular Arithmetic
+---
+**DEFINITION 1 :**
+>If a and b are integer with a $\neq$0,we say that a divides b if there is an integer c such that b=ac,or equivalently,if b/a is an integer.  
+When a divides b we say that a is a factor or divisor of b,and that b is a multiple of a.The notation a $\mid$ b denotes that a divides b.We   
+write a $\nmid$ b when a does not divide b.
+**Remark:** We can express a $\mid$ b using quantifiers as $\exists$c(ac=b), where the universe of discourse is the set of integers.
+
+**THEOREM 1**
+> Let a,b and c be integers,where a $\neq$ 0.Then
+(i) if a $\mid$ b and a $\mid$ c then a $\mid$ (b+c);
+(ii) if a $\mid$ b,then a $\mid$ bc for all integers c;
+(iii)if a $\mid$ b and b $\mid$ c,then a $\mid$ c.
+
+**COROLLARY 1**
+> If a,b and c are integers,when a $\neq$ 0, such that a $\mid$ b and a $\mid$ c,then a $\mid$ mb + nc whenever m and n are integers.
+
+
+**THEOREM2**
+> Let a be an integer and b a positive integer.Then there are unique integer q and r,with 0$\leq$r$\leq$d,such that  a = dq + r.
+--- ***proof*** at Section 5.2
+
+**DEFINITION 2**
+>Omit
+
+**DEFINITION 3**
+> If a and b are integers and m is a positive integer,then a is congruent to b modulo m if m divides a --- b. We use the notation   
+a $\equiv$ b (mod m) to indicate that a is congruent to b modulo m/We say that a $\equiv$ b (mod m) is a congruence and that m   
+is its modulus(**plural modul**i).If a and b are not congrunent modulo m,we write a $\not\equiv$ b (mod m).
+
+**THEOREM 3**
+> Let a and b be integers,and let m be a positive integers.Then a $\equiv$ b (mod m) if and only if a **mod** m= b **mod** m.
+
+**THEOREM 4**
+>Let m be a positive integer.The integer a and b are congruent modulo m if and only if there is an integer k such that a = b + km.
+
+**THEOREM 5**
+>Let m be apositive integer.If a $\equiv$ b (mod m) and c $\equiv$ d (mod m),then a + c $\equiv$ b + d (mod m) and ac $\equiv$ bd (mod m).
+--***proof:***Because a $\equiv$ b (**mod** m) and c $\equiv$ d (**mod** m),by Theorym 4,there are integers s and t with a = b + ms and c = d +mt.Hence:  
+a + c =b +c +m(s + t), Hence  
+(a + c) $\equiv$ (b+d) (**mod** m).  
+It is same proof as (ac) $\equiv$ (bd) (mod m).
+
+**COROLARY 2**
+> Let m be a positive integer and let a and b be integers.Then  
+(a + b)**mod** m = ((a **mod** m) + (b **mod** m)) (**mod** m)  
+**and**  
+ab **mod** m = ((a **mod** m)(b **mod** m)) (**mod** m).
+---***proof:***Because a $\equiv$ (a **mod** m) (**mod** m),b $\equiv$ (b **mod** m) (**mod** m),use Theorem 5,  
+that a + b $\equiv$ ((c **mod** m)+(b **mod** m))**mod** m.  
+The same proof as ab $\equiv$ ((a **mod** m)(b **mod** m)) mod m.
+
+###4.2-Integer Representations and Algorithms
+---
+####Reprenstations od Integers
+---
+OMIT
+####Algorithms for Integer Operations
+---
+OMIT
+###4.3-Primes and Greatest Common Divisors
+---
+
+**DEFINITIONS 1**
+> An integer p greater than 1 is called *prime* if the only positive factors of *p* are 1 and *p*.A positive integer that is greater  
+than 1 and is not prime is called *composite*.
+**Remark:**The insteger *n* is composite if and only if there exists an integer a such that a $\mid$ n and 1 < a < n.
+
+**THEOREM 1**
+>Every integer greater than 1 can be written uniquely as a prime or as the product of two or  
+more primes where the prime factors are writen in order of nondecreasing size.
+
+**THEOREM 2**
+>If *n* is a compisite integer,then *n* has a prime divisor less than or equal to $\sqrt n$
+***proof:***

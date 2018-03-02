@@ -1,0 +1,6 @@
+project(asm)
+cmake_minimum_required(VERSION 3.1)
+enable_language(ASM)
+add_library(print print.s)
+add_executable(a main.c)
+target_link_libraries(a print)

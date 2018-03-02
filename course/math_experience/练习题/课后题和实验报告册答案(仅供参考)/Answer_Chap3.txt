@@ -1,0 +1,84 @@
+clc; clear; close all
+%% 题2
+syms x; 
+f = exp(-x^2); S1 = int(f,x,0,2); double(S1)   %% 符号法  
+
+f = inline('exp(-x.^2)'); S2 = quad(f,0,2)      %% 数值法一
+
+f = @(x) exp(-x.^2);      S3 = integral(f,0,2)  %% 数值法二
+
+%% 题3
+syms x
+f = x*sin(x); 
+D1f = diff(f,x)             %%%% 一阶导
+D2f = diff(f,x,2)           %%%% 二阶导
+
+%% 题4  %%%新版本Matlab taylor用法有点变化
+syms x
+f = cos(x^2); 
+Tayf1 = taylor(f,x,0,'Order',5)     %%%% x=0点四阶Taylor展开
+Tayf2 = taylor(f,x,2,'Order',7)     %%%% x=2点六阶Taylor展开
+
+
+
+%% 题6
+syms x y
+for i =1:10
+    figure(1); 
+    axis ([-2 2 -2 2]);   %%%坐标控制
+    ezplot(x^(2*i)+y^(2*i)-1); pause(0.5); %%%绘图
+    grid on; hold on;  
+end
+hold off
+
+
+%% 题7 %% y^2/4-z^2/9=1 绕 z 轴旋转一周
+t = linspace(-pi/4,pi/4,50); 
+y = 9*sec(t);   z = 4*tan(t);  %%%% 双曲线参数方程
+
+figure(1); plot(y,z,'-r'); axis equal%%%%%旋转曲面母线
+P = sqrt(1+z.^2/9)*2;      %%%%%旋转曲面母线上的点
+[X,Y,Z] = cylinder(P,30); %%%%%绘制旋转曲面
+figure(2); mesh(X,Y,Z)
+
+%% 题8 %% y=sin(x) 绕 x 轴\  y 轴旋转一周
+x = linspace(0,2*pi,100); 
+y = sin(x);
+figure(1); plot(x,y,'-r'); axis equal %%%%%正弦函数
+[X,Y,Z] = cylinder(y,60); %%%%%绘制旋转曲面
+figure(2); mesh(Z,X,Y)
+
+%% 题12
+f1 = dsolve('D2y+k^2*y=0','x')
+f2 = dsolve('D2y+y=sin(x)','x')
+
+
+
+%% 题13
+syms x
+f = x^3 -x^2 -x +1;
+ezplot(f,-1.5,2);  grid on; hold on 
+rx=roots([1 -1 -1 1]); ry =zeros(1,3);
+plot(rx,ry,'r*','markersize',10);
+text(rx(1),ry(1)-0.2,'\it{x}_1')
+text(rx(2),ry(2)-0.2,'\it{x}_2')
+
+
+
+
+%% 题16
+syms x 
+y1 =sqrt(x);
+y2 = x^2;
+int(y1-y2,x,0,1)
+
+
+
+%% 题17
+syms x 
+s1 = int(x^2-x^3+x^4,0,1)
+
+
+%%%% 18,20题目见第二章、第三章与地球、卫星等相关的例题
+
+

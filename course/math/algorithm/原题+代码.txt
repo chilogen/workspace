@@ -1,0 +1,162 @@
+Complete Building the House
+Time Limit: 6000/2000MS (Java/Others)     Memory Limit: 65535/65535KB (Java/Others)
+
+Submit  Status
+Bear has a large, empty ground for him to build a home. He decides to build a row of houses, one after another, say nn in total. The houses are designed with different height. Bear has m workers in total, and the workers must work side by side. So at a time bear can choose some continuous houses, no more than mm, and add their heights by one, this takes one day to finish.
+
+Given the designed height for each house, what is the minimum number of days after which all the houses’ heights are equal to the design?
+
+Input
+The first line of input contains a number TT, indicating the number of test cases. (T≤50T≤50)
+
+For each case, the first line contains two integers nn and mm: the number of houses and the number of workers(1≤n,m≤100,0001≤n,m≤100,000). The next line comes with nn numbers, they are the heights of the houses from left to right.(0≤height≤1,000,000,0000≤height≤1,000,000,000)
+
+Output
+For each case, output Case #i: first. (ii is the number of the test case, from 11 to TT). Then output the days when bear’s home can be built.
+
+Sample input and output
+Sample Input	
+2
+3 3
+1 2 3
+3 3
+3 2 1
+
+Sample Output
+Case #1: 3
+Case #2: 3
+
+缩写代码（检测系统：acm.uestc.edu.cn  681题）
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+class data
+{
+private:
+	char a[15];
+public:
+	data(int m_a = 0)
+	{
+		int tmp = m_a;
+		for(int i=0;i<15;i++)
+		{
+			a[i] = (char)(tmp%10+48);
+			tmp = (int)(tmp/10);
+		}
+	}
+	~data(){}
+	void add(int p)
+	{
+		char b[15];
+		int tmp = p;
+		int c = 0;
+		for(int i=0;i<15;i++)
+		{
+			b[i] = (char)((tmp%10)+48);
+			int t = (a[i] + b[i] + c - 96);
+			if(t >= 10)
+			{
+				a[i] = (char)(t + 38);
+				c = 1;
+			}
+			else
+			{
+				a[i] = (char)(t + 48);
+				c = 0;
+			}
+			tmp = (int)(tmp/10);
+		}
+	}
+	void print(int p)
+	{
+		cout << "Case #" << p << ": ";
+		int i = 14;
+		while((i >= 0)&&(a[i] == 48))
+		{
+			i--;
+		}
+		if(i == -1)
+		{
+			cout << 0 << endl;
+		}
+		else
+		{
+			for(int k=i;k>=0;k--)
+			{
+				cout << (int)(a[k]-48);
+			}
+			cout << endl;
+		}
+	}
+};
+
+int main()
+{
+	vector<data> t;
+	int T;
+	cin >> T;
+	for(int i=0;i<T;i++)
+	{
+		long int n,m;
+		cin >> n >> m;
+		vector<int> H;
+		for(int j=0;j<n;j++)
+		{
+			int tmp;
+			cin >> tmp;
+			H.push_back(tmp);
+		}
+		data OPT;
+		if(m==1)
+		{
+			for(int i=0;i<n;i++)
+			{
+				OPT.add(H[i]);
+			}
+			t.push_back(OPT);
+		}
+		else if(m >= n)
+		{
+			long int tmp = 0;
+			for(int i=0;i<n;i++)
+			{
+				if(H[i]>tmp)
+				{
+					tmp = H[i];
+				}
+			}
+			OPT.add(tmp);
+			t.push_back(OPT);
+		}
+		else
+		{
+			long int sum = 0;
+			queue<int> M;
+			for(int k=0;k<m-1;k++)
+			{
+				M.push(0);
+			}
+			for(int i=0;i<n;i++)
+			{
+				int tmp = H[i] - sum;  
+				if(tmp < 0)
+				{
+					tmp = 0;
+				}
+				sum += (tmp - M.front());
+				M.pop();
+				M.push(tmp);
+				OPT.add(tmp);
+			}
+			t.push_back(OPT);
+		}
+	}
+	for(int i=1;i<=T;i++)
+	{
+		t[i-1].print(i);
+	} 
+	return 0;	
+}

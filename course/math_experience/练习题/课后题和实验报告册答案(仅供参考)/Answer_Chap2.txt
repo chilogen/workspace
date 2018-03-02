@@ -1,0 +1,340 @@
+% clc; clear; close all
+
+%%%%% Page 50 例2.9
+% xy = [ -1 -1; 1 -1; 1 1 ; -1 1; -1 -1];
+% A  = [cos(pi/24)  -sin(pi/24); sin(pi/24)  cos(pi/24)];
+% x  = xy(:,1); 
+% y  = xy(:,2);
+% axis off
+% line(x,y);
+% for k=1:24
+%     xy = 0.89*xy*A';
+%     x  = xy(:,1); y = xy(:,2);
+%     line(x,y);  pause(0.1);
+% end
+
+
+
+%%%%% Page 51 例2.10
+% % M = moviein(16);
+% t = linspace(0,2*pi,60);
+% r = 0:0.1:2;
+% x = r'*cos(t);
+% y = r'*sin(t);
+% z = x.^2-y.^2;
+% AZ= -20; 
+% for k=1:24
+%     mesh(x,y,z);   axis off 
+%     colormap([0,1,1]);     view(AZ,20);
+%     axis square;
+%     M(:,k) = getframe;
+%     AZ = AZ + 15;
+% end
+% movie(M)
+
+
+%%%%% Page 52 例2.11 角谷猜想
+% n = input('input n=');
+% N = n;
+% T = 1;
+% while n~=1
+%     r = rem(n,2);
+%     if r==0
+%         n = n/2;
+%     else
+%         n=3*n+1;
+%     end
+%     N = [N,n];
+%     T = T+1;
+% end
+% N,T
+
+
+%%%%% Page 53 例2.12 队伍联络员问题
+% vA = 10; vB = 8; vC = 60;
+% f  = 1;  k = 0;
+% A  = 0; B = 100;
+% 
+% while B-A>0.2
+%     if f==1
+%         tk = (B-A)/(vB+vC);
+%     else 
+%         tk = (B-A)/(vA+vC);
+%     end
+%     A = A + vA*tk; 
+%     B = B - vB*tk;    
+%     plot([0 A],[0,0],'-pr','Markersize',15,'MarkerFacecolor','r'); hold on; pause(0.1) 
+%     plot([100 B],[0 0],'-pb','Markersize',15,'MarkerFacecolor','b'); hold on; pause(0.1)
+%     axis([0 100 -0.2 0.2])
+%     f = -f;
+%     k = k+1;
+% end
+% k,A,B
+% hold off
+% 
+    
+
+    
+%%%%% Page 68 牟合方盖
+% h = 2*pi/100;
+% t = 0:h:2*pi;
+% r = 0:0.05:1;
+% 
+% x = r'*cos(t); y = r'*sin(t); z = sqrt(1-x.^2);
+% figure(1); 
+% meshz(x,y,z); colormap([0,0,0]);
+% view(-47,56);
+% 
+% x1= cos(t); y1=sin(t); z1 = abs(sin(t));
+% figure(2); 
+% plot3(x1,y1,z1,x1,y1,0*z1);
+
+
+  
+% format long G
+% V = 2;            %%%%% 倍立方体的体积
+% H = 2^(1/3);      %%%%% 精确的倍立方高
+% N = 15;           %%%%% 双精度小数数
+% Err = zeros(1,N);
+% for i = 1:N;     
+%     aH= H*10^i;   %%%%% 小数点右移
+%     aH=floor(aH); %%%%% 舍去多余小数部分
+%     aH=aH/10^i;   %%%%% 小数点移回 
+%     Err(i) = V - aH^3; %%%%% 计算误差    
+% end
+% format short e
+% Err
+% figure; semilogy(1:N,Err,'rp-','linewidth',1.,'Markersize',12);
+% xlabel('保留小数的位数','fontsize',16)
+% ylabel('倍立方体积误差','fontsize',16)
+% legend('Error curve')
+
+    
+
+% %%% page 58 例子飞机曲线绘制
+% % function flytravel
+% city = [40 116; 31 122; 36 140; 37 -123; 41 -76];
+% figure(1);
+% sphere(24); colormap([1 1 1]); axis off; hold on
+%  
+% p1 = city(1,:);  
+% p2 = city(5,:);
+% skyway(p1,p2);
+% 
+% figure(2); sphere(24); colormap([1,1,1]); axis off; hold on;
+% for k =1:4
+%     p1 = city(k,:); 
+%     p2 = city(k+1,:);
+%     skyway(p1,p2);
+% end
+
+
+
+
+
+% %%%%%%% page 72 飞机航程计算
+% % function flytravel
+% city = [40 116; 31 122; 36 140; 37 -123; 41 -76];
+% 
+% figure(1);    %%%%% 问题分析
+% [X,Y,Z] = sphere(25); mesh(X,Y,Z);  hold on
+% p1 = city(3,:);  
+% p2 = city(4,:);
+% skyway(p1,p2);
+% 
+% 
+% %%%% 问题解决
+% R = 6400 + 10; %%%%地球半径+ 飞行高度
+% L = 0;         %%%%% 计算旧航线里程    
+% for k =1:4
+%     p1 = city(k,:); 
+%     p2 = city(k+1,:);
+%     Angle = skyangle(p1,p2);
+%     L =  L+R*Angle;
+% end
+% 
+% p1 = city(1,:);  %%%%% 计算新航线里程 
+% p2 = city(5,:);
+% Angle = skyangle(p1,p2);
+% NL = R*Angle;
+% fprintf('Old line is %4.2e\nNew line is %4.2e\n',L,NL)
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 习题2
+% function ChineseYear=CompYear(Y)
+% TG='甲乙丙丁戊己庚辛壬癸';        %%%%% 天干
+% DZ='子丑寅卯辰巳午未申酉戌亥';    %%%%% 地支
+% STG=repmat(TG,[1,6]);  
+% SDZ=repmat(DZ,[1,5]);  
+% SixtyYear = [];
+% for k=1:60          %%%%制造出60年的一个轮回
+%     SixtyYear=strvcat(SixtyYear, [STG(k),SDZ(k)]); 
+% end
+% Idx = mod(29 + mod(Y-2012,60),60); 
+% ChineseYear=SixtyYear(Idx,:);
+% 
+% end
+
+
+%%
+%%%%%  习题3考察switch的用法
+% function Star=StarFun(Day,Month)
+% switch Month
+%     case 1
+%         if Day>=20;   Star='水瓶';  else  Star='魔蝎'; end        
+%     case 2
+%         if Day>=19;   Star='双鱼';  else Star='水瓶'; end
+%     case 3
+%         if Day>=21;   Star='白羊';  else Star='双鱼';  end
+%     case 4
+%         if Day>=20;    Star='金牛';  else  Star='白羊'; end
+%     case 5 
+%         if Day>=21;   Star='双子';  else   Star='金牛';  end
+%     case 6
+%         if Day>=22;   Star='巨蟹';  else  Star='双子'; end
+%     case 7
+%         if Day>=23;   Star='狮子';  else  Star='巨蟹';  end
+%     case 8
+%         if Day>=23;   Star='处女';  else  Star='狮子'; end
+%     case 9
+%         if Day>=23;   Star='天秤';  else  Star='处女'; end
+%     case 10  
+%         if Day>=24;   Star='天蝎';  else Star='天秤'; end
+%     case 11
+%         if Day>=22;   Star='射手';  else   Star='天蝎'; end
+%     case 12
+%         if Day>=22;   Star='魔蝎';  else  Star='射手'; end
+% end
+% 
+
+
+%% 习题 5 小猴吃桃问题： 只要能写出通项公式，则问题的程序很容易写出来
+%%%%% a_10=1;   第10天吃之前的桃子数
+%%%%% 因为 a_10=a_9-(a_9/2 + 1);  第9天吃之前的桃子数a_9=2*(a_10 +1)
+%%%%% 从而得出数列的通项公式： a_{n} = 2*(a_{n+1}+1)
+
+PeachNum=zeros(1,10);   %%%%用于储存每天的桃子数
+PeachNum(10) = 1;       %%%% 第10天桃子数为 1
+for i =9:-1:1
+    PeachNum(i)=2*(PeachNum(i+1)+1);  %%%% 非常简单的通项公式的循环
+end
+fprintf('每天吃之前的桃子数:\n');
+disp(PeachNum)
+
+
+%% 习题 6 五猴分桃问题： 只要能写出通项公式，则问题的程序很容易写出来
+%%%%%% 第一只猴分配之前的桃数 a_1
+%%%%%% 第二只猴分配之前的桃数 a_2=（4/5）*（a_1-1）, 即被第一只猴让掉一个后的（4/5）份
+%%%%%% ...... 从而得到通项公式: a_{n+1}=（4/5）*（a_n-1）,即a_n=(5/4)*a_{n+1}+1
+%%%%%% 第五只猴分配之前的桃数 a_5=（4/5）*（a_4-1）, 且每项必须整数
+clc
+clear all
+for k =1:400;
+    PeachNum=zeros(1,6);
+    PeachNum(6)=4*k;
+    for i=5:-1:1
+        PeachNum(i)=5*PeachNum(i+1)/4+1;        
+    end
+    Flag=sum(mod(PeachNum(2:6),4));  %%%% 判断所有数值是否都是整数
+    if Flag==0
+        fprintf('每只猴分之前桃子数:\n');
+        disp(PeachNum)
+%         break;
+    end
+end
+
+
+%%  习题 7
+% 
+% for Num= 1e+2:1e+6
+%     Arr= int2str(Num);  %%% 数字变字符串
+%     L  = length(Arr);   %%% 字符长度
+%     Vec= zeros(1,L);     %%% 储存 个，十，百，... 各位数字
+%     for k=1:L
+%         Vec(k)=str2num(Arr(k));
+%     end
+%     if Num == sum(Vec.^L) 
+%         if L==3
+%             fprintf('水仙花数%d\n',Num)
+%         elseif L==4            
+%             fprintf('玫瑰花数%d\n',Num)
+%         elseif L==5
+%             fprintf('五角星数%d\n',Num)
+%         elseif L==6
+%             fprintf('六合数%d\n',Num)
+%         end
+%     end
+%     
+% end
+
+
+
+
+%% 习题8
+% for i=1:1000
+%     Num=[];
+%     for j=1:i-1
+%         if mod(i,j)==0;
+%             Num=[Num,j];
+%         end
+%     end
+%     if sum(Num)==i
+%         fprintf('完全数%d with its factors:',i); disp(Num); fprintf('\n'); 
+%     end
+% end
+
+
+
+%%  习题 9 数字河问题: 从 NumStart开始的数字河
+% NumStart= 483;
+% Num  = NumStart;
+% River= [];
+% for Itr = 1:10
+%     Str = num2str(Num);
+%     Len = length(Str);
+%     Vec = zeros(1,Len);
+%     for i=1:Len
+%         Vec(i)=str2double(Str(i));
+%     end
+%     Num  = Num + sum(Vec);
+%     River= [River,Num];
+% end
+% fprintf('The river start at Num=%d is as follows:\n',NumStart)
+% disp(River)
+
+%% 习题10 约瑟夫环问题
+% close all
+% clear all
+% clc
+% Number= 6;   %%%%总人数
+% Step  = 3;    %%%%开始报 7
+% Order =[];    %%%%退出的顺序
+% Arr = 1:Number; 
+% Len = length(Arr); 
+% while Len>1
+%     V    = (1:Len) + fix(Step/Len)*Len;
+%     V    = mod(V,Step);
+%     Order= [Order,Arr(V==0)];
+%     Arr(V==0)=0;
+%     Ind  = find(V==0,1,'last'); 
+%     if Ind>1 && Ind<Len
+%         Tep = Arr(1:Ind-1);
+%         Tep(Tep==0)=[];
+%         Arr = [Arr(Ind+1:end),Tep];
+%     else
+%         Arr(Arr==0) = [];
+%     end
+%     Len = length(Arr);
+% end
+% Order=[Order,Arr]
+%     
+
+
+%% 习题11 旋转曲面
+% 见课本page 97 图画3.20
+
+
+

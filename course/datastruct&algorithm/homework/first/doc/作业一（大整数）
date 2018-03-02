@@ -1,0 +1,192 @@
+#大整数加减运算
+#2016060107001 韦嗣千
+
+* 算法思想:
+需要实现大整数加减法，使用竖式计算思想，按位加减。
+* 数据结构----线性表
+可选数据结构有线性表和链表因为只需要在末尾进行插入，链表在插入操作上的优势无  
+法体现，反而浪费存储空间， 所以采用线性表。
+* 细节处理
+	* 竖式计算都需要从低位开始，所以需要对输入进行倒置，返回结果时再次倒置
+	* 减法操作后，最高位可能会出现零，需将其除去
+	* 加法操作后，最高位可能产生进位，结果需添加一位
+* 实现(详见注释)
+BigInteger.h
+```
+/*
+实现BIgInteger类，重载加减号，返回类型为string
+初始化：
+BIgInteger a(string s1),b(string s2);
+cout<<s1+s2<<endl;
+*/
+#ifndef BIGINTEGER
+#define BIGINTEGER
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef struct BigInteger
+{
+	vector<int>v;//利用vector自动延伸的特性，达到”无限“的线性表
+	bool flag;//保存符号
+	BigInteger(string &s)
+	{
+		string::reverse_iterator p=s.rbegin();//将输入倒置
+		while(p!=s.rend())
+		{
+			v.push_back(*p-'0');
+			p++;
+		}
+	}
+	bool les(BigInteger &a,BigInteger &b)//判断字典序，将大者当减数
+	{
+		vector<int>:reverse_iterator p1=a.v.rbegin(),p2=b.v.rbegin();
+		while(p1!=a.v.rend()&&p1!=b.v.rend())
+		{
+			if(*p1<*p2)	return true;
+			p1++;
+			p2++;
+		}
+		return false;
+
+	}
+	string operator +(struct BigInteger &a)
+	{
+		string ans;//返回的结果
+		long carryflag=0,res=0;//进位（carryflag）和按位加结果（res）
+		vector<int>::iterator p1=a.v.begin(),p2=this->v.begin();
+		while(p1!=a.v.end()&&p2!=this->v.end())
+		{
+			res=*p1+*p2+carryflag;
+			carryflag=res/10;
+			p1++,p2++;
+			ans.push_back(res%10+'0');
+		}//按位加
+		
+		//处理剩下多出的位数
+		while(p1!=a.v.end())
+		{
+			res=*p1+carryflag;
+			ans.push_back(res%10+'0');
+			carryflag=res/10;
+			p1++;
+		}
+		while(p2!=this->v.end())
+		{
+			res=*p2+carryflag;
+			ans.push_back(res%10+'0');
+			carryflag=res/10;
+			p2++;
+		}
+		
+		if(carryflag)	ans.push_back(carryflag+'0');//最高位产生进位，需新添一位
+		reverse(ans.begin(),ans.end());//反转结果
+		return ans;
+	}
+
+	string operator -(struct BigInteger &a)
+	{
+		string ans;
+		BigInteger *a1,*a2;
+		vector<int>::iterator p1,p2;
+		bool flag=0;
+		long carryflag=0,res=0;
+		if(a.v.size()> this->v.size()||(a.v.size()==this->v.size()&&les(a,*this)))
+			a1=&a,a2=this,flag=1;
+		else a1=this,a2=&a,flag=0;//将大者当减数
+		p1=a1->v.begin();	p2=a2->v.begin();
+		while(p1!=a1->v.end()&&p2!=a2->v.end())
+		{
+			if(*p1-carryflag<0||*p1-carryflag<*p2)
+			{
+				*p1=*p1-carryflag+10;
+				carryflag=1;
+			}
+			else
+			{
+				*p1-=carryflag;
+				carryflag=0;
+			}//处理借位
+			
+			ans.push_back(*p1-*p2+'0');//按位减
+			p1++,p2++;
+		}
+		
+		//处理多出的位数
+		while(p1!=a1->v.end())
+		{
+			if(*p1-carryflag<0)
+			{
+				*p1=*p1-carryflag+10;
+				carryflag=1;
+			}
+			else *p1-=carryflag;
+			ans.push_back(*p1+'0');
+			p1++;
+		}
+		string::reverse_iterator nozero=ans.rbegin();
+		long k;
+		while(*nozero=='0'&&nozero!=ans.rend())
+		{
+			nozero++;
+			ans.pop_back();
+		}
+		if(ans.length()==0)
+		{
+			ans.push_back('0');
+			return ans;
+		}
+		
+		if(flag)	ans.push_back('-');//如果开始交换了减数被减数，则在答案前加一负号
+		reverse(ans.begin(),ans.end());
+		return ans;
+	}
+}Integer;
+
+/*
+处理输入字符串c，返回加（减）数a,b
+*/
+bool StringProcess(string &a,string &b,string c)
+{
+	string::iterator p=c.begin();
+	string d[2];
+	bool method=0;
+	int i=0;
+	while(1)
+	{
+		if(*p=='-')	{method=true;	i++;	p++;	continue;}
+		if(*p=='+')	{method=false;	i++;	p++;	continue;}
+		if(*p=='=')	break;
+		d[i].push_back(*p);
+		p++;
+	}
+	a=d[0];	b=d[1];
+	return method;
+}
+
+#endif
+```
+
+BigIntegerTest.c
+```
+#include "BigInteger.h"
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main()
+{
+	string ans,s1,s2,c;
+	cin>>c;
+	bool method=StringProcess(s1,s2,c);
+	Integer a(s1),b(s2);
+	if(method)	cout<<a-b<<endl;
+	else cout<<a+b<<endl;
+	return 0;
+}
+
+```
+
+* 说明
+	* 输入格式为 a+b=,**(a,b>=0)**
+	* 使用vector偷懒了，附带的**List.h和ListFun.c**为线性表的实现
