@@ -5,6 +5,7 @@ import time
 import os
 import shutil
 from exep import *
+from bs4 import BeautifulSoup
 
 
 def GetPic(lan,imgpath,path):
@@ -20,6 +21,7 @@ def GetPic(lan,imgpath,path):
 	urllib.request.urlretrieve(imageurl,filename)
 	shutil.move(filename,imgpath)
 	return True
+	
 
 def ConstructURL(idx,n):
 	return 'http://cn.bing.com/HPImageArchive.aspx?format=js&idx='+str(idx)\

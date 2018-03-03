@@ -11,6 +11,6 @@ try:
 	c=config.get('aaa','picture flode')
 	d=config.get('aaa','install path')
 	spider.GetPic(a,c,d)
-	os.system(d+'shell'+b)
+	os.system(d+'shell/'+b)
 except NetworkException as e:
 	print(e.arg)
