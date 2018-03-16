@@ -127,7 +127,7 @@ public:
 			return true;
 		}
 		LL c=R[0],i,j;
-		for(i=R[0];i!=0;i=R[i])if(cnt[i]<cnt[c])	c=i;
+		for(i=R[0];i!=0;i=R[i])if(cnt[i]<=cnt[c])	c=i;
 
 		del(c);
 		for(i=D[c];i!=c;i=D[i]){
@@ -189,7 +189,7 @@ int main(){
 			cout<<endl;
 		}
 		cout<<endl;
-		sudu->solve(0);
+		sudu->solveall(0);
 		delete sudu;
 	}
 	return 0;
