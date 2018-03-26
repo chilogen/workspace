@@ -8,12 +8,11 @@
 	"variants": 
 	[
 		{
-		"name": "Compile",
+			"name": "Compile",
 			"shell_cmd": "g++ -Wall -std=c++11 \"$file_name\" -o \"$file_base_name\""
-
 		},
 		{	
-		"name": "Compile for Debug",
+			"name": "Compile for Debug",
         	"shell_cmd": "g++ -g -Wall -std=c++11 \"$file_name\" -o \"$file_base_name\""
 		},
 		{
@@ -21,7 +20,7 @@
 			"shell_cmd": "g++ -Wall -std=c++11 \"$file_name\" -o \"$file_base_name\"&&time ./${file_base_name}<abc.in"
 		},
 		{	
-		"name": "gdb Debug",
+			"name": "gdb Debug",
         	"shell_cmd": "g++ -g -std=c++11 \"$file\" -o \"$file_base_name\" &&konsole -e gdb ${file_path}/${file_base_name} "
 		}
 	]
