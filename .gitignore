@@ -35,4 +35,5 @@ abc.out
 #flode
 ./_pycache
 ./try
+./cmake-build-debug
 course

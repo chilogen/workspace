@@ -1,0 +1,6 @@
+include_directories(inc)
+add_library(IO io.cpp)
+add_library(RSA rsa.cpp)
+add_library(CLIENT client.cpp)
+add_library(SERVER server.cpp)
+target_link_libraries(RSA gmpxx gmp)
