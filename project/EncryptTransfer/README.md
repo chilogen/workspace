@@ -18,10 +18,6 @@
     ```html
     part1:header
     <filename>    4096bit
-    <clientsocket>
-          <ipaddres>  32bit
-          <port>         32bit
-    </clientsocket>
     <publickey>   4096bit
     ```
     ```html
@@ -58,20 +54,21 @@
         - public:  
           RSA(path,flag)  从path读取密钥，0--公钥，1---私钥  
           RSA()  生成公钥、私钥  
-          RSA::encrypt(data) data--vector<gmp>  
-          RSA::decode(data)  return value ---vector<gmp>  param ---vector<gmp>  
+          RSA::encrypt(data) return value ---vector<gmp> data---vector<gmp>  
+          RSA::decode(data)  return value ---vector<gmp> data---vector<gmp>  
         - private:  
           gmp public_key,private_key  
-          RSA::readkey(path)
+          RSA::readkey(path)  
           RSA::genkey()
     * NET  
         - public:  
           NET::connect(socket)  
           NET::listen(socket)  
           NET::recv(socketid,bit) joinable pthread  
-          NET::send(socketid,bit,data) data--vector<gmp> joinable pthread
+          NET::send(socketid,bit,data) data--int16_t* joinable pthread
         - private:  
-          vector<socket>s
+          vector<socket> s  
+          vector<uint32_t> free  
           NET::resolve()
     * IO  
         - public:
@@ -84,3 +81,16 @@
     * FUN  
         b2g(bit*,len)   return gmp  
         g2b(gmp)        return (bit*.len)
+        
+        
+        
+* problem
+    * SIGPIPE singnal occur on server when client force exit
+    > use signal(SIGPIPE,signal_call_back_func(SIG_IGN)) and the check socket every time when read data
+    
+    * mutiple definition in bss section when declare an value in common header file
+    > declare value in cpp file and use extern in header file
+    
+    * mess code when comunicate
+    > reset buffer before every transfer
+    

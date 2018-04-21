@@ -1,8 +1,0 @@
-//
-// Created by a on 4/12/18.
-//
-
-#ifndef ENCRYPTTRANSFER_SERVER_H
-#define ENCRYPTTRANSFER_SERVER_H
-
-#endif //ENCRYPTTRANSFER_SERVER_H
