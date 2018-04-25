@@ -60,9 +60,10 @@ int main(){
 	sort(a,a+10);
 	root1=new node();
 	root2=new node();
-	build(root1,a,5);
-	build(root2,a+5,5);
-	root1=merge(root1,root2);
-	split(root1,6,root1,root2);
+	build(root1,a,10);
+	splay(root1,5);
+	//build(root2,a+5,5);
+	//root1=merge(root1,root2);
+	//split(root1,5,root1,root2);
 	return 0;
 }
