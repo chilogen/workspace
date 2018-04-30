@@ -13,6 +13,11 @@ RSA::RSA(string path, int32_t flag) {
     readkey(path,flag);
 }
 
+void RSA::setpkey(mpz_class n,mpz_class d){
+    key_n=n;
+    key_d=d;
+}
+
 void RSA::genkey() {
     mpz_class p=1,q=1,Gcd,a,b;
     uint32_t i,j;
@@ -61,4 +66,13 @@ vector<mpz_class> RSA::decode(vector<mpz_class> cipertext) {
         cleartext.push_back(res);
     }
     return cleartext;
+}
+
+bool RSA::isprime(mpz_class p) {
+
+    return true;
+}
+
+int32_t RSA::readkey(string path, int32_t flag) {
+
 }

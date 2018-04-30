@@ -26,14 +26,23 @@ uint32_t NET::listen(uint32_t fd) {
 }
 
 uint32_t NET::recv(netparm parm) {
-    uint16_t *buff=parm.data;
+    uint8_t *buff=parm.data;
     uint32_t len=parm.bitsize;
     uint32_t fd=parm.fd;
-    return read(fd,buff,len);
+    uint32_t pidind=parm.pidind;
+    if(read(fd,buff,len)==0){
+        while(freepidlock);
+        freepidlock=true;
+        freepid.push(pidind);
+        freepidlock=false;
+        close(fd);
+        return 0;
+    }
+    else return 1;
 }
 
 uint32_t NET::send(netparm parm) {
-    uint16_t* buff=parm.data;
+    uint8_t * buff=parm.data;
     uint32_t len=parm.bitsize;
     uint32_t fd=parm.fd;
     return write(fd,buff,len);

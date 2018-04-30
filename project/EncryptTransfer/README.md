@@ -16,6 +16,11 @@
 
 * 报文格式:  
     ```html
+    part0:say ready
+    <flag>   8 bit
+    0---wait  1---ok
+    ```
+    ```html
     part1:header
     <filename>    4096bit
     <publickey>   4096bit
@@ -94,3 +99,4 @@
     * mess code when comunicate
     > reset buffer before every transfer
     
+    * SIGPIPE signal occur randomly when client write to server

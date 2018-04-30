@@ -19,6 +19,7 @@ namespace enp{
         RSA();
         vector<mpz_class>encrypt(vector<mpz_class>);
         vector<mpz_class>decode(vector<mpz_class>);
+        void setpkey(mpz_class,mpz_class);
     };
 }
 

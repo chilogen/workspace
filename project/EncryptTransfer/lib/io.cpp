@@ -27,7 +27,7 @@ namespace enp{
     }
 
     void IO::operator<<(mpz_class data) {
-        if(openmode!=ios::in){
+        if(openmode!=ios::out|ios::binary){
             cerr<<"ERROR open mode\n";
             return ;
         }
@@ -45,7 +45,7 @@ namespace enp{
     }
 
     void IO::operator>>(mpz_class &data) {
-        if(openmode!=ios::out){
+        if(openmode!=ios::in|ios::binary){
             cerr<<"ERROT open mode\n";
             return ;
         }

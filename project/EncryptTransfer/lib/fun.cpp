@@ -18,7 +18,7 @@ sockadd::sockadd(sockaddr_in a, uint32_t b) {
     this->fd=b;
 }
 
-mpz_class x2g(uint16_t* data,uint32_t len){
+mpz_class enp::x2g(uint8_t* data,uint32_t len){
     uint32_t i,j,k;
     mpz_class ans=0;
     for(i=0;i<len;i++){
@@ -32,7 +32,7 @@ mpz_class x2g(uint16_t* data,uint32_t len){
     }
     return ans;
 }
-pair<uint16_t* ,uint32_t> g2x(mpz_class mp){
+pair<uint16_t* ,uint32_t> enp::g2x(mpz_class mp){
     uint32_t len=0,i,j,k;
     mpz_class tmp=mp;
     while (tmp!=0){
@@ -50,4 +50,17 @@ pair<uint16_t* ,uint32_t> g2x(mpz_class mp){
         else data[i]='A'+k;
     }
     return make_pair(data,len);
+}
+
+
+enp::netparm::netparm(uint32_t a, uint32_t b, uint32_t c, uint8_t *d) {
+    this->fd=a;
+    this->pidind=b;
+    this->bitsize=c;
+    this->data=d;
+}
+
+enp::funtionparm::funtionparm(uint32_t a, uint32_t b) {
+    this->fd=a;
+    this->pidind=b;
 }

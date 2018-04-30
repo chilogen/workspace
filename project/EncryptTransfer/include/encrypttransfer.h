@@ -26,8 +26,10 @@ namespace enp{
     };
     struct netparm{
         uint32_t fd;
+        uint32_t pidind;
         uint32_t bitsize;
-        uint16_t* data;
+        uint8_t * data;
+        netparm(uint32_t,uint32_t,uint32_t,uint8_t *);
     };
     struct Header{
         uint16_t filename[4096+1];
@@ -35,12 +37,14 @@ namespace enp{
         uint32_t port;
         uint8_t key[4096/8];
     };
-    struct TranHeader{
+    struct TransferHeader{
         uint8_t offset;
         uint8_t size;
     };
-    struct END{
-        uint16_t flag;
+    struct funtionparm{
+        uint32_t fd;
+        uint32_t pidind;
+        funtionparm(uint32_t,uint32_t=0);
     };
 
     extern const uint16_t ENDFLAG;
@@ -48,10 +52,16 @@ namespace enp{
     extern uint32_t primebit;
     extern uint32_t databit;
     extern std::string key_path;
+    extern uint32_t serverport;
+    extern uint32_t serverlistenaddr;
+    extern pthread_t pid[10000];
+    extern queue<uint32_t >freepid;
+    extern bool freepidlock;
+    extern uint8_t wait;
+    extern uint8_t ready;
 
-    mpz_class x2g(uint16_t* data,uint32_t len);
+    mpz_class x2g(uint8_t* data,uint32_t len);
     pair<uint16_t* ,uint32_t> g2x(mpz_class mp);
-    void *netrecvfun(void* args);
 }
 
 #include <io.h>

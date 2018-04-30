@@ -3,6 +3,12 @@
 //
 
 #include <encrypttransfer.h>
+using namespace enp;
+
+NET client;
+void clintfun(){
+
+}
 
 int main(){
 
