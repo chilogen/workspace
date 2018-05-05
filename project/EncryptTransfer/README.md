@@ -100,3 +100,7 @@
     > reset buffer before every transfer
     
     * SIGPIPE signal occur randomly when client write to server
+    
+    * undefined reference to `bool enp::Recv<unsigned char>(unsigned char*&, int, unsigned int, unsigned int)'
+    > template entity should write with declaretion in one file
+    

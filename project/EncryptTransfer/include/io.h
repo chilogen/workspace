@@ -6,20 +6,29 @@
 #define ENCRYPTTRANSFER_IO_H
 
 #include <encrypttransfer.h>
-namespace enp{
-    class IO{
+namespace enp {
+    class IO {
     private:
-        uint32_t size;
+        uint8_t size;
         string path;
         fstream stream;
-        ios_base::openmode openmode;
+        ios_base::openmode Openmode;
     public:
         void operator<<(mpz_class data);
-        void operator>>(mpz_class &data);
+
+        uint8_t operator>>(mpz_class &data);
+
         void setsize(uint32_t s);
-        void open(string p,ios_base::openmode mode);
+
+        void open(string p, ios_base::openmode mode);
+
         IO();
-        IO(string path,ios_base::openmode  mode);
+
+        IO(string path, ios_base::openmode mode);
+
+        bool eof() {
+            return stream.eof();
+        }
     };
 }
 

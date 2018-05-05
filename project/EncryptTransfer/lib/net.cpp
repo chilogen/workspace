@@ -6,44 +6,81 @@
 
 using namespace enp;
 
-
-
-sockadd NET::connect(socke soc) {
-    struct sockaddr_in serveraddr;
-    uint32_t fd;
-    memset(&serveraddr,0,sizeof(serveraddr));
-    serveraddr.sin_family=AF_INET;
-    serveraddr.sin_addr.s_addr=soc.ip;
-    serveraddr.sin_port=soc.port;
-    fd=socket(AF_INET,SOCK_STREAM,0);
-    bind(fd,(struct sockaddr*)&serveraddr,sizeof(serveraddr));
-    sockadd ans(serveraddr,fd);
-    return ans;
+bool NET::check(char *ip, uint32_t port) {
+    uint32_t p = 0;;
+    unsigned char buf[sizeof(struct in6_addr)];
+    if (!inet_pton(AF_INET, ip, buf))return 0;
+    if (port <= 1024 || port > 65535)return 0;
+    return 1;
 }
 
-uint32_t NET::listen(uint32_t fd) {
-    return accept(fd,(struct sockaddr*)NULL,NULL);
-}
-
-uint32_t NET::recv(netparm parm) {
-    uint8_t *buff=parm.data;
-    uint32_t len=parm.bitsize;
-    uint32_t fd=parm.fd;
-    uint32_t pidind=parm.pidind;
-    if(read(fd,buff,len)==0){
-        while(freepidlock);
-        freepidlock=true;
-        freepid.push(pidind);
-        freepidlock=false;
-        close(fd);
+bool NET::init(char *ip, uint32_t port, int sc) {
+    if (sc == SERVER && this->check(ip, port)) {
+        cerr << "wrong IP or PORT\n";
         return 0;
     }
-    else return 1;
+
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+
+
+    memset(&sock, 0, sizeof(sock));
+    sock.sin_family = AF_INET;
+    sock.sin_port = htons(port);
+
+    switch (sc) {
+        case SERVER: {
+            sock.sin_addr.s_addr = htonl(INADDR_ANY);
+            bind(fd, (struct sockaddr *) &sock, sizeof(sock));
+            listen(fd, 10);
+            break;
+        }
+        case CLIENT: {
+            inet_pton(AF_INET, ip, &sock.sin_addr);
+            break;
+        }
+    }
 }
 
-uint32_t NET::send(netparm parm) {
-    uint8_t * buff=parm.data;
-    uint32_t len=parm.bitsize;
-    uint32_t fd=parm.fd;
-    return write(fd,buff,len);
+void NET::Connect(Header H) {
+    unsigned char buf[16];
+    uint8_t handshake = 0;
+
+    while (!handshake) {
+        connect(fd, (struct sockaddr *) &sock, sizeof(sock));
+        void *tmp = (void *) &handshake;
+        if (!Recv(tmp, 8)) {
+            cerr << "Server ERROR\n";
+            exit(1);
+        }
+    }
+    if (!Send(&H, sizeof(H))) { ;
+        cerr << "Server ERROR\n";
+        exit(1);
+    }
+}
+
+pair<uint32_t,uint32_t > NET::Listen() {
+    uint32_t nfd, pidind;
+    while (true) {
+        nfd = accept(fd, (struct sockaddr *) NULL, NULL);
+        while (freepidlock);
+        freepidlock = true;
+        if (!freepid.empty()) {
+            pidind = freepid.front();
+            freepid.pop();
+            freepidlock = false;
+            if (!Send(&ServerReady, 8)) {
+                cerr << "Server ERROR\n";
+                exit(1);
+            }
+            break;
+        } else {
+            freepidlock = false;
+            if (!Send(&ServerNoReady, 8)) {
+                cerr << "Server ERROR\n";
+                exit(1);
+            }
+        }
+    }
+    return make_pair(pidind, nfd);
 }

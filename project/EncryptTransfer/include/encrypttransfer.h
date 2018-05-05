@@ -5,6 +5,15 @@
 #ifndef ENCRYPTTRANSFER_ENCRYPTTRANSFER_H
 #define ENCRYPTTRANSFER_ENCRYPTTRANSFER_H
 
+#define LINUX
+//define WINDOWS
+
+#define SERVER  0
+#define CLIENT  1
+
+#define PUBLIC_KEY  0
+#define PRIVATE_KEY 1
+
 #include <bits/stdc++.h>
 #include <gmpxx.h>
 #include <arpa/inet.h>
@@ -12,56 +21,50 @@
 
 using namespace std;
 
-namespace enp{
-    struct socke{
-        uint32_t ip;
-        uint16_t port;
-        void set(uint32_t a,uint16_t b);
-    };
-    struct sockadd{
-        sockaddr_in addr;
-        uint32_t fd;
-        sockadd();
-        sockadd(sockaddr_in a,uint32_t b);
-    };
-    struct netparm{
-        uint32_t fd;
-        uint32_t pidind;
-        uint32_t bitsize;
-        uint8_t * data;
-        netparm(uint32_t,uint32_t,uint32_t,uint8_t *);
-    };
-    struct Header{
-        uint16_t filename[4096+1];
-        uint32_t ipaddr;
-        uint32_t port;
-        uint8_t key[4096/8];
-    };
-    struct TransferHeader{
-        uint8_t offset;
-        uint8_t size;
-    };
-    struct funtionparm{
-        uint32_t fd;
-        uint32_t pidind;
-        funtionparm(uint32_t,uint32_t=0);
+namespace enp {
+    struct Dataheader {
+        uint16_t ciphertextlen;
+        uint8_t plaintextlen;
+        uint8_t end;
+
+        void set(uint16_t, uint8_t, uint8_t);
     };
 
+    struct Header {
+        uint8_t encodemethod;
+        unsigned char filename[4096 / 8];
+        char keyn[4096 / 8];
+        char keyd[4096 / 8];
+
+        void set(uint8_t, unsigned char *, mpz_class, mpz_class);
+    };
+
+    struct funtionparm {
+        uint32_t pidind;
+        uint32_t fd;
+
+        funtionparm(uint32_t, uint32_t);
+    };
+
+    extern uint8_t ServerNoReady;
+    extern uint8_t ServerReady;
     extern const uint16_t ENDFLAG;
     extern const uint16_t DATALEN;
-    extern uint32_t primebit;
-    extern uint32_t databit;
-    extern std::string key_path;
     extern uint32_t serverport;
     extern uint32_t serverlistenaddr;
     extern pthread_t pid[10000];
-    extern queue<uint32_t >freepid;
+    extern queue<uint32_t> freepid;
     extern bool freepidlock;
-    extern uint8_t wait;
-    extern uint8_t ready;
+    extern string k1024;
+    extern string k2048;
+    extern string k4096;
 
-    mpz_class x2g(uint8_t* data,uint32_t len);
-    pair<uint16_t* ,uint32_t> g2x(mpz_class mp);
+    mpz_class x2g(unsigned char *data, uint16_t len);
+
+    pair<unsigned char *, uint16_t> g2x(mpz_class mp);
+
+    void clear();
+
 }
 
 #include <io.h>
