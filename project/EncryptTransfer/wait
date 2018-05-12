@@ -1,2 +1,15 @@
-client parm
-release memeory
+paramer process
+make up
+
+
+already checked:
+void Header::set(uint8_t a, unsigned char *b, mpz_class c, mpz_class d)
+mpz_class x2g(unsigned char *data, uint16_t len)
+pair<unsigned char *, uint16_t> g2x(mpz_class mp)
+void RSA::genkey()
+bool RSA::setkey(uint8_t i)
+void RSA::readkey(std::string path)
+bool RSA::checkkey()
+bool NET::check(char *ip, uint32_t port)
+pair<uint32_t,uint32_t > NET::Listen()
+void NET::Connect(Header H)

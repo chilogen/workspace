@@ -12,9 +12,9 @@ void RSA::setkey(mpz_class n, mpz_class d) {
     key_d = d;
 }
 
-bool RSA::setkey(uint8_t i) {
+bool RSA::setkey(int i) {
     string path;
-    keylen=(int)i*1024;
+    keylen=i*1024;
 
     pair<mpz_class,mpz_class>p;
     switch(keylen){
@@ -33,13 +33,13 @@ bool RSA::setkey(uint8_t i) {
     }
     readkey(path);
     if(!checkkey()){
-        cerr<<"key file broken,run regenkey";
+        cerr<<"key file broken,run regenkey\n";
         genkey();
     }
 }
 
 void RSA::genkey() {
-    mpz_class p = 1, q = 1, Gcd, a, b;
+    mpz_class p = 1, q = 1, Gcd;
     uint32_t i, j;
     srand((unsigned) time(NULL));
     for (i = 0; i <keylen>>1; i++) {//i from 0 to keylen/2,make p&q one more bit and n two more bits
@@ -50,22 +50,18 @@ void RSA::genkey() {
         j = rand() % 2;
         if (j)q++;
     }
-    if (p % 2 == 1)p++;
-    if (q % 2 == 1)q++;
-    while (!isprime(p))p += 2;
-    while (!isprime(q))q += 2;
+
+    mpz_class tmp1=p,tmp2=q;
+    mpz_nextprime(p.get_mpz_t(),tmp1.get_mpz_t());
+    mpz_nextprime(q.get_mpz_t(),tmp2.get_mpz_t());
+
+
     key_n = p * q;
     key_phi = (p - 1) * (q - 1);
-    i = rand();
-    key_e = i;
-    while (1) {
-        mpz_gcd(Gcd.get_mpz_t(), key_n.get_mpz_t(), key_e.get_mpz_t());
-        if (Gcd == 1)break;
-        key_e++;
-    }
-    a = key_phi - 1;
-    b = key_n * key_n;
-    mpz_powm(key_d.get_mpz_t(), key_e.get_mpz_t(), a.get_mpz_t(), b.get_mpz_t());
+    key_e=65537;
+
+    mpz_invert(key_d.get_mpz_t(),key_e.get_mpz_t(),key_phi.get_mpz_t());
+
     string path;
     switch(keylen){
         case 1024:{
@@ -82,26 +78,24 @@ void RSA::genkey() {
         }
     }
     ofstream fout(path,ios::out);
-    fout<<key_n<<endl<<key_d<<endl<<key_e<<endl<<key_phi;
+    fout<<key_n<<endl<<endl<<key_d<<endl<<endl<<key_e<<endl<<endl<<key_phi;
     fout.close();
+#ifdef KEY_TEST
+    exit(1);
+#endif
 }
 
 mpz_class RSA::encrypt(mpz_class plainttext) {
     mpz_class ciphertext;
-    mpz_powm(ciphertext.get_mpz_t(), plainttext.get_mpz_t(), key_e.get_mpz_t(), key_n.get_mpz_t());
+    mpz_powm(ciphertext.get_mpz_t(), plainttext.get_mpz_t(), key_d.get_mpz_t(), key_n.get_mpz_t());
     return ciphertext;
 }
-
 mpz_class RSA::decode(mpz_class ciphertext) {
     mpz_class plainttext;
-    mpz_powm(plainttext.get_mpz_t(), ciphertext.get_mpz_t(), key_d.get_mpz_t(), key_n.get_mpz_t());
+    mpz_powm(plainttext.get_mpz_t(), ciphertext.get_mpz_t(), key_e.get_mpz_t(), key_n.get_mpz_t());
     return plainttext;
 }
 
-bool RSA::isprime(mpz_class p) {
-
-    return true;
-}
 
 void RSA::readkey(std::string path) {
 
@@ -109,22 +103,26 @@ void RSA::readkey(std::string path) {
 
     if (!fin.is_open()) {
         cerr << "NO such key file\n";
-        exit(1);
+        cerr<<"run regenkey\n";
+        genkey();
     }
-    string s1, s2, s3, s4;
-    fin >> s1 >> s2 >> s3 >> s4;
+    fin >> key_n >> key_d >> key_e >> key_phi;
     fin.close();
-    key_n = s1;
-    key_d = s2;
-    key_e = s3;
-    key_phi = s4;
 }
 
 bool RSA::checkkey() {
     bool ans;
-    if(!isprime(key_n))return false;
-    if(key_e>=key_phi)return false;
-    if(key_n%key_e!=1)return false;
+    int i=0;
+    mpz_class tmp=key_n;
+    while(tmp){
+        i++;
+        tmp>>=1;
+    }
+    if(i!=keylen+2)return false;
+    if(key_e>key_phi)return false;
+    tmp=key_e*key_d;
     if((key_e*key_d)%key_n!=1)return false;
+    mpz_gcd(tmp.get_mpz_t(),key_e.get_mpz_t(),key_n.get_mpz_t());
+    if(tmp!=1)return false;
     return true;
 }

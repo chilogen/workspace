@@ -12,7 +12,7 @@ namespace enp {
         uint8_t size;
         string path;
         fstream stream;
-        ios_base::openmode Openmode;
+        _Ios_Openmode Openmode;
     public:
         void operator<<(mpz_class data);
 
@@ -24,7 +24,7 @@ namespace enp {
 
         IO();
 
-        IO(string path, ios_base::openmode mode);
+        IO(char* path, ios_base::openmode mode);
 
         bool eof() {
             return stream.eof();

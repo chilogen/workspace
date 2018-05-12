@@ -9,15 +9,12 @@ using namespace enp;
 void help() {
     clear();
     std::cout << "Usage :\n";
-    std::cout << "sendTo <server IP> <encode method>  <file> <key_path>\n";
-    std::cout << "encode method:\n";
-    std::cout << "1----1024 bits key\n";
-    std::cout << "2----2048 bits key\n";
-    std::cout << "3----4096 bits key\n";
+    std::cout << "sendTo <server IP>  <file>\n";
 }
 
 bool checkparm(int argv,char** argc) {
-    if (argv != 5)return 0;
+    if (argv != 3)
+        return 0;
     /*
      *
      *
@@ -32,37 +29,62 @@ int main(int argv,char **argc) {
         return 0;
     }
     char *serverip = argc[1];
-    uint8_t *encodemethod = (uint8_t *) &argc[2][0];
-    char *filename = argc[3];
+    char *filename = argc[2];
 
-    RSA coder;
-    coder.setkey(*encodemethod);
-
-    pair<mpz_class,mpz_class>p=coder.getpublickey();
 
     NET client;
-    Header H;
-    H.set(*encodemethod, (unsigned char *) filename, p.first, p.second);
+    RSA coder;
     client.init(serverip, serverport, CLIENT);
-    client.Connect(H);
+    mpz_class keyn,keyd,tmp;
+    Header H;
+
+    client.Connect();
+    void* tmp1=&H;
+    cout<<sizeof(H)<<endl;
+    if(!Recv(tmp1,sizeof(H),client.fd)){
+        cerr<<"SERVER ERROR\n";
+        return 0;
+    }
+
+    coder.setkey(x2g(H.keyn,H.lenkeyn),x2g(H.keyd,H.lenkeyd));
+    cout<<sizeof(filename)<<endl;
+    if(!Send(filename,sizeof(filename),client.fd)){
+        cerr<<"SERVER ERROR\n";
+        return 0;
+    }
 
     IO fin(filename, ios::in | ios::binary);
-    char buf[4096];
-    mpz_class tmp;
     uint8_t isend = 0, state;
     Dataheader DH;
-    pair<unsigned char *, uint16_t> p1;
+    char data[4096];
+    uint16_t len;
 
     while (1) {
         state = fin >> tmp;
-        tmp = coder.encrypt(tmp);
-        p1 = g2x(tmp);
-        isend = fin.eof();
-        DH.set(p1.second, state, isend);
-        client.Send(&DH, sizeof(DH));
-        client.Send(p1.first, p1.second * 8);
-        delete p1.first;
+#ifdef DEBUG
+        cout<<"明文： "<<tmp<<endl;
+#endif
+        tmp=coder.encrypt(tmp);
+#ifdef DEBUG
+        cout<<"密文： "<<tmp<<endl;
+#endif
+        len = g2x((char*)data,tmp);
+#ifdef DEBUG
+        cout<<data<<endl;
+#endif
+        if(fin.eof())isend=1;
+        else isend=0;
+        DH.set(len, state, isend);
+        if(!Send(&DH, sizeof(DH),client.fd)||!Send(data, len,client.fd)){
+            cerr<<"Server ERROR\n";
+            return 0;
+        }
         if (isend)break;
     }
+    tmp1=&isend;
+    if(!Recv(tmp1,sizeof(isend),client.fd)||isend!=ENDFLAG)
+        cerr<<"Transfer fail,try again\n";
+    else cerr<<"Compelete!\n";
+    close(client.fd);
     return 0;
 }

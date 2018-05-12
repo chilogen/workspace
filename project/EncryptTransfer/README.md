@@ -99,8 +99,27 @@
     * mess code when comunicate
     > reset buffer before every transfer
     
-    * SIGPIPE signal occur randomly when client write to server
+    * SIGPIPE signal occur randomly when client write to server\
+    > as mention above,this probelm happen when someting wrong with other side of the internet.At this place,it happen
+    because of a segmen fault in server
     
     * undefined reference to `bool enp::Recv<unsigned char>(unsigned char*&, int, unsigned int, unsigned int)'
     > template entity should write with declaretion in one file
     
+    * munmap_chunk(): invalid pointer in g2x
+    > 跟踪调试，在gmpxx.h 1523: ~__gmp_expr() { mpz_clear(mp); } 处报段错误  
+    mpz_clear是一个释放内存的函数,mp%2 生成一个临时变量，这个临时变量回收时会产生错误，原因暂时不明，  
+    解决方法为加一中间变量保存mp%2结果
+    
+    * 协议语法
+    > write 和 read 不是一一对应的，若客户端一次write 5 个字节，服务器端一次read 1 个字节，多余字节不会被
+    丢弃，服务器端将会使用 5 次read 读入全部五个字节,但write却不必要放松read需要的所以字节字符
+    
+    * corrupted double-linked list error occur in functuon x2g
+    > actually,the problem cause by IO::operator\<\<,already make a copy of it at /public/backup/confusionproblem/projectname
+    
+    * something unexceptable append to the destnation file,and if reduce the planttext size
+    in the client,some bits will miss at the front
+    > because of the eof flag.In c++,when you reach the file end,the eof still equal to
+    false.it will become true when you try to read another bit.so check the eof flag after
+    read no before

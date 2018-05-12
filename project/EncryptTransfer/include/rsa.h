@@ -17,8 +17,6 @@ namespace enp {
 
         void readkey(string);
 
-        bool isprime(mpz_class p);
-
     public:
         RSA();
 
@@ -28,7 +26,7 @@ namespace enp {
 
         void setkey(mpz_class, mpz_class);
 
-        bool setkey(uint8_t);
+        bool setkey(int);
 
         bool checkkey();
 

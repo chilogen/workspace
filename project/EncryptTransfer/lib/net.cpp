@@ -8,14 +8,14 @@ using namespace enp;
 
 bool NET::check(char *ip, uint32_t port) {
     uint32_t p = 0;;
-    unsigned char buf[sizeof(struct in6_addr)];
+    uint8_t buf[sizeof(struct in6_addr)];
     if (!inet_pton(AF_INET, ip, buf))return 0;
     if (port <= 1024 || port > 65535)return 0;
     return 1;
 }
 
 bool NET::init(char *ip, uint32_t port, int sc) {
-    if (sc == SERVER && this->check(ip, port)) {
+    if (sc == CLIENT && !this->check(ip, port)) {
         cerr << "wrong IP or PORT\n";
         return 0;
     }
@@ -25,11 +25,16 @@ bool NET::init(char *ip, uint32_t port, int sc) {
 
     memset(&sock, 0, sizeof(sock));
     sock.sin_family = AF_INET;
-    sock.sin_port = htons(port);
+    sock.sin_port = port;
 
     switch (sc) {
         case SERVER: {
-            sock.sin_addr.s_addr = htonl(INADDR_ANY);
+            unsigned int i;
+            while(freepidlock);
+            freepidlock=true;
+            for(i=0;i<MAXPID;i++)freepid.push(i);
+            freepidlock=false;
+            sock.sin_addr.s_addr = serverlistenaddr;
             bind(fd, (struct sockaddr *) &sock, sizeof(sock));
             listen(fd, 10);
             break;
@@ -41,21 +46,20 @@ bool NET::init(char *ip, uint32_t port, int sc) {
     }
 }
 
-void NET::Connect(Header H) {
-    unsigned char buf[16];
-    uint8_t handshake = 0;
+void NET::Connect() {
+    uint8_t handshake = ServerNoReady;
 
-    while (!handshake) {
+    while (1) {
         connect(fd, (struct sockaddr *) &sock, sizeof(sock));
         void *tmp = (void *) &handshake;
-        if (!Recv(tmp, 8)) {
+        if (!Recv(tmp, 1, fd)) {
             cerr << "Server ERROR\n";
             exit(1);
         }
-    }
-    if (!Send(&H, sizeof(H))) { ;
-        cerr << "Server ERROR\n";
-        exit(1);
+        if (handshake == ServerNoReady) {
+            close(fd);
+            sleep(ClientSleepTime);
+        } else break;
     }
 }
 
@@ -69,14 +73,17 @@ pair<uint32_t,uint32_t > NET::Listen() {
             pidind = freepid.front();
             freepid.pop();
             freepidlock = false;
-            if (!Send(&ServerReady, 8)) {
+            if(!Send(&ServerReady,1,nfd)){
+                close(nfd);
                 cerr << "Server ERROR\n";
                 exit(1);
             }
+            cout<<"build a connection\n";
             break;
         } else {
             freepidlock = false;
-            if (!Send(&ServerNoReady, 8)) {
+            if(!Send(&ServerNoReady,1,nfd)){
+                close(nfd);
                 cerr << "Server ERROR\n";
                 exit(1);
             }

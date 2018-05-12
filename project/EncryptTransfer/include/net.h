@@ -10,60 +10,35 @@ namespace enp {
     class NET {
     private:
         struct sockaddr_in sock;
-        uint32_t fd;
 
         bool check(char *ip, uint32_t port);
 
     public:
+        int fd;
         bool init(char *ip, uint32_t port, int sc);//sc=0-->server   sc=1-->client
-        void Connect(Header H);
 
-        pair<uint32_t, uint32_t> Listen();
+        void Connect();//for client
+        pair<uint32_t, uint32_t> Listen();//for server
 
-        template<class T>
-        bool Recv(T *&buf, int size);
-
-        template<class T>
-        bool Send(T *buf, int size);
     };
 
-    template<class T>
-    bool Recv(T *&buf, int size, uint32_t pidind, uint32_t fd);
 
-
-    template<class T>
-    bool NET::Send(T *a, int size) {
+    template <class T>
+    bool Send(T* a,int size,uint32_t fd){
         int n;
         void *buf = (void *) a;
         n = write(fd, buf, size);
-        if (n != size) {
-            close(fd);
-            return 0;
-        } else return 1;
+        if (n != -1) {
+            return 1;
+        } else return 0;
     }
 
     template<class T>
-    bool NET::Recv(T *&a, int size) {
+    bool Recv(T *&a, int size, uint32_t fd) {
         int n;
         void *buf = (void *) a;
         n = read(fd, buf, size);
-        if (n != size) {
-            close(fd);
-            return 0;
-        } else return 1;
-    }
-
-    template<class T>
-    bool Recv(T *&a, int size, uint32_t pidind, uint32_t fd) {
-        int n;
-        void *buf = (void *) a;
-        n = read(fd, buf, size);
-        if (n != size) {
-            close(fd);
-            while (freepidlock);
-            freepidlock = true;
-            freepid.push(pidind);
-            freepidlock = false;
+        if (n ==-1) {
             cerr << "transfer closed\n";
             return 0;
         } else return 1;
