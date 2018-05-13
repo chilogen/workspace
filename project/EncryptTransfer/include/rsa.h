@@ -1,6 +1,7 @@
-//
-// Created by a on 4/13/18.
-//
+/*
+ * Created by a on 4/13/18.
+ * RSA algorithm use gmp library
+*/
 
 #ifndef ENCRYPTTRANSFER_RSA_H
 #define ENCRYPTTRANSFER_RSA_H
@@ -24,11 +25,11 @@ namespace enp {
 
         mpz_class decode(mpz_class);
 
-        void setkey(mpz_class, mpz_class);
+        void setkey(mpz_class, mpz_class);          //client set public key to encrypt
 
-        bool setkey(int);
+        bool setkey(int i);                         //server set public and private key file path,keylen=i*1024
 
-        bool checkkey();
+        bool checkkey();                            //check key read from file is valid
 
         pair<mpz_class, mpz_class> getpublickey() {
             return make_pair(key_n, key_d);

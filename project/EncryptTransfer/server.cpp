@@ -40,8 +40,10 @@ void* serverfun(void *args) {
     }
 
     tmp1=filename;
+#ifdef DEBUG
     cout<<sizeof(filename)<<endl;
-    if(!Recv(tmp1,4096,fd)){
+#endif
+    if(!Recv(tmp1,FILENAMELEN,fd)){
         close(fd);
         cerr<<"Transfe closed\n";
         while (freepidlock);
@@ -56,7 +58,6 @@ void* serverfun(void *args) {
     Dataheader *tmp2 = &DH;
     tmp1 = buffer;
     while (DH.end!=1) {
-        cout<<sizeof(DH)<<endl;
         if (!Recv(tmp2, sizeof(DH), fd)){
             close(fd);
             cerr<<"Transfe closed\n";
@@ -118,13 +119,13 @@ bool checkparm(int argv,char** argc) {
 }
 
 int main(int argv,char **argc) {
+    signal(SIGINT,ctrlc);
     if(!checkparm(argv,argc)){
         help();
         return 0;
     }
     pair<uint32_t, uint32_t> p;
     int encodemethod=argc[2][0]-'0';
-
     server.init((char *) NULL, serverport, SERVER);
     cout << "server ready for transfer data...\n";
     while (1) {
@@ -133,6 +134,5 @@ int main(int argv,char **argc) {
         fp.set(p.first,p.second,encodemethod);
         pthread_create(&pid[p.first], NULL, serverfun, (void *)&fp);
     }
-
     return 0;
 }

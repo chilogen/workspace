@@ -1,6 +1,9 @@
-//
-// Created by a on 4/13/18.
-//
+/*
+ * Created by a on 4/13/18.
+ * client read file
+ * server write file
+ * reload operator "<<" for server and ">>" for client
+*/
 
 #ifndef ENCRYPTTRANSFER_IO_H
 #define ENCRYPTTRANSFER_IO_H
@@ -9,8 +12,8 @@
 namespace enp {
     class IO {
     private:
-        uint8_t size;
-        string path;
+        uint16_t size;              //data len will read from file next time
+        string path;                //file path
         fstream stream;
         _Ios_Openmode Openmode;
     public:
@@ -18,9 +21,9 @@ namespace enp {
 
         uint8_t operator>>(mpz_class &data);
 
-        void setsize(uint32_t s);
+        void setsize(uint16_t s);
 
-        void open(string p, ios_base::openmode mode);
+        void open(_Ios_Openmode mode);
 
         IO();
 

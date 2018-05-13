@@ -22,7 +22,6 @@ bool checkparm(int argv,char** argc) {
     return 1;
 }
 
-
 int main(int argv,char **argc) {
     if (!checkparm(argv, argc)) {
         help();
@@ -48,7 +47,7 @@ int main(int argv,char **argc) {
 
     coder.setkey(x2g(H.keyn,H.lenkeyn),x2g(H.keyd,H.lenkeyd));
     cout<<sizeof(filename)<<endl;
-    if(!Send(filename,sizeof(filename),client.fd)){
+    if(!Send(filename,FILENAMELEN,client.fd)){
         cerr<<"SERVER ERROR\n";
         return 0;
     }

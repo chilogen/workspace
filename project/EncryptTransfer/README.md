@@ -1,5 +1,14 @@
 # 文件加密传输---综合课程设计
 
+> update Almost finish now,only left parm process  
+usage:  
+for client:
+sendto ip filename  
+for server:
+recv -m [1\2\4]
+
+
+
 * 设计目标  
 使用RSA非对称加密、TCP协议、Linux多线程，实现文件加密传输
 
@@ -123,3 +132,8 @@
     > because of the eof flag.In c++,when you reach the file end,the eof still equal to
     false.it will become true when you try to read another bit.so check the eof flag after
     read no before
+    
+    * althought used the same code process with ascii file and binary(ALL process at binary
+    mode),some bit will miss when transfer binaryfile
+    > when output the plantext and ciphertext pair,i found some plantext are negative in client,
+    it mean something wrong in IO.finally found the problem at (char j)->(unsigned char j)

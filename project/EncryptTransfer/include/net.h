@@ -1,6 +1,8 @@
-//
-// Created by a on 4/13/18.
-//
+/*
+ * Created by a on 4/13/18.
+ * net work init,shake hand
+ * offer send and receive data function packaging
+*/
 
 #ifndef ENCRYPTTRANSFER_NET_H
 #define ENCRYPTTRANSFER_NET_H

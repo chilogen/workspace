@@ -8,23 +8,28 @@
 namespace enp {
     IO::IO() {
         //setsize(databit);
-        setsize(127);
+        setsize(DATALEN);
     }
 
-    IO::IO(char* path, _Ios_Openmode mode) {
-        stream.open(path, mode);
+    IO::IO(char* p, _Ios_Openmode mode) {
+        path=p;
+        open(mode);
         //setsize(databit);
-        setsize(127);
+        setsize(DATALEN);
         Openmode = mode;
     }
 
-    void IO::open(string p, ios_base::openmode mode) {
-        //stupid error
+    void IO::open(_Ios_Openmode mode) {
+        //stupid error,mode already set as binary last layout
         //stream.open(path, ios::binary | mode);
         stream.open(path,mode);
+        if(!stream.is_open()){
+            cerr<<"file open error\n";
+            exit(1);
+        }
     }
 
-    void IO::setsize(uint32_t s) {
+    void IO::setsize(uint16_t s) {
         size = s;
     }
 
@@ -34,8 +39,7 @@ namespace enp {
             return;
         }
 
-        //temporary
-        char buf[512];
+        char buf[1024];
 
         int i;
         unsigned long k;
@@ -58,11 +62,12 @@ namespace enp {
             return 0;
         }
         uint8_t i;
-        char j;
+        unsigned char j;
+        //error: char j;
         data = 0;
         for (i = 0; i < size; i++){
             //stream>>j;
-            stream.read(&j,sizeof(j));
+            stream.read((char*)&j,sizeof(j));
             if(stream.eof())return i;
             data<<=8;
             data+=j;

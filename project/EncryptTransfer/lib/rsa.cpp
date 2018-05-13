@@ -111,7 +111,6 @@ void RSA::readkey(std::string path) {
 }
 
 bool RSA::checkkey() {
-    bool ans;
     int i=0;
     mpz_class tmp=key_n;
     while(tmp){

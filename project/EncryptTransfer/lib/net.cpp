@@ -65,6 +65,10 @@ void NET::Connect() {
 
 pair<uint32_t,uint32_t > NET::Listen() {
     uint32_t nfd, pidind;
+    if(serverreject&&!Send(&ServerNoReady,1,nfd)){
+        cerr << "Server ERROR\n";
+        exit(1);
+    }
     while (true) {
         nfd = accept(fd, (struct sockaddr *) NULL, NULL);
         while (freepidlock);
