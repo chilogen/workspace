@@ -1,0 +1,95 @@
+#B - 暑假集训
+> 我也许知道为什么 T67
+
+* 做完l题后，知道了状态压缩，再写这道题就不难了。可是，没讲题之前，状态压缩   
+听都没听过，对一个新人来说，路漫漫其修远兮。
+
+* 关于状态压缩,只要了解二进制运算，应该不是问题。但我有个疑问，用一个数来保  
+存状态 0 和 1，最多也只能保存64位，为什么不用数组，然后再传形参呢？速度会有  
+很大差别吗？  
+
+* 先再描述一遍算法思路，再在代码中加注释吧。听完讲题后再写解题报告就是水啊，  
+所以我又思考了一下 T67的问题  
+
+* 算法描述: 
+	* 0 表示 该位同学已被选中，1 表示 该位同学还没被选，判断某位同学是否  被  
+	选则是 `s&(1<<i)` 将某位同学从未被选中标记为选中则是 `s^(1<<i)`。  
+
+	* 然后，枚举该轮跳哪三人，选上他们，得到一个新状态 s,s又可以由很多其他状  
+	态转移得到，选一个配合度最大的转移方式，赋给d[s],也就是  
+	`d[s]=MAX(d[s],dp(s^(1<<i)^(1<<j)^(1<<k))+p[i][j][k])`
+
+* 再来讨论一下 T67
+	* 想法来自于 l 题的一个 TLE 做法，我也写在了 l题的解题报告中。l 题正确的做法  
+	是按格收缩，可是在网上搜索 状态压缩时，有篇博客有一个将两行所有状况枚举  
+	的做法，因此在调用dp时，要给出每行的状态，而一行最多有5格，所以在第一  
+	层调用的时候就先有了一个 2<sup>n</sup>，导致最后的复杂度有一个2<sup>2<sup>n</sup></sup>，而按格搜索的话  
+	只有一个2<sup>n</sup>。
+
+	* 讲题人把代码都放在ppt里了，给出的上限复杂度是2<sup>n</sup>\*n\*n,但第一次调用该是什  
+	么？我认为应该是 `s=(1<<n)-1;	dp(s);` 以为 s 代表所有人都没有被选上时  
+	的状态，第一次调用当然应该是所有人都没有被选上。是不是有人产生了类似l题  
+	错误思路类似的想法，在第一次调用时枚举了所有的状态，导致超时？我试着提交，  
+	发现67之前每个测试点都很慢，几乎是随着浏览器刷新+1，然后 T67。再把第一  
+	次调用改了，时间47ms。
+	
+	* 以上仅为胡乱猜测。
+
+代码：
+```c
+#define OJ
+#include <bits/stdc++.h>
+#define pb push_back
+#define _1 first
+#define _2 second
+#define FOR(i,a,b) for(int i=a;i<(b);i++)
+#define FORN(i,b) for(int i=0;i<(b);i++)
+#define reset(a,b) memset(a,b,sizeof(a))
+#define MAX(a,b)  a>b?a:b
+#define MIN(a,b)  a>b?b:a
+using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int,int> pii;
+typedef vector<int> vi;
+typedef vector<pair<int,int> > vii;
+
+int d[1<<21],n;
+int p[21][21][21];
+int dp(int s)
+{
+  if(d[s]!=-1)  return d[s];
+  int i,j,k,l;
+  for(i=0;i<n-2;i++)
+    if(s&(1<<i))  break;//如果 i 没有被选上
+  for(j=i+1;j<n-1;j++)
+    if(s&(1<<j))//如果 j 没有备选上
+      for(k=j+1;k<n;k++)
+        if(s&1<<k) //如果 k 没有被选上
+          d[s]=MAX(d[s],dp(s^(1<<i)^(1<<j)^(1<<k))+p[i][j][k]);
+  return d[s];
+}
+int main()
+{
+	#ifndef OJ
+	freopen("abc.in","r",stdin);
+	freopen("abc.out","w",stdout);
+	#endif
+  int i,j,k,l,m;
+  scanf("%d",&n);
+  for(i=0;i<n*(n-1)*(n-2)/6;i++)
+  {
+    scanf("%d%d%d%d",&j,&k,&l,&m);
+    p[j-1][k-1][l-1]=m;
+  }
+  int s=(1<<n)-1;
+  reset(d,-1);
+  d[0]=0;
+  dp(s);
+  printf("%d",d[s]);
+	#ifndef OJ
+	fclose(stdin);
+	fclose(stdout);
+	#endif
+}
+```

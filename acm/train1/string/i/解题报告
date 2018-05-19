@@ -1,0 +1,70 @@
+#I - Xiper的奇妙历险(1)
+
+* 设三个变量 l,c,r，二进制位为 1 表示该位置不能再放皇后。  
+l表示因为上一行（i+1）位有皇后，导致左下角不能放皇后的状态  
+c表示因为上一行 （i）位有皇后导致该列不能放皇后的状态  
+r表示因为上一行（i-1）位有皇后，导致右下角不能放皇后的状态  
+
+* 利用位运算判断某位是否可以放皇后，若在i位放置了一个皇后，这个棋子和顶上  
+所有棋子对下一行的影响传递方式为：  
+```
+l:
+(l<<1)|(1<<i+1);
+c:
+c|(1<<I);
+r:
+(r>>1)|(1<<i-1);
+```
+
+* 当搜索到最后一行，若还能放下一个棋子，则为合法答案，否则回溯。
+
+代码：
+```c
+#include <bits/stdc++.h>
+using namespace std;
+int ans[1000][10],k=0;;
+void output()
+{
+  int i;
+  for(i=0;i<9;i++) 
+    ans[k+1][i]=ans[k][i];
+  k++;
+}
+void queen(int l,int c,int r,int n)
+{
+  if(n==9) {output(); return ;}
+  int i,j;
+  int ll,cc,rr;
+  for(i=1;i<=9;i++)
+  {
+    j=1<<i;
+    if(((j&l)==0)&&((j&c)==0)&&((j&r)==0))
+    {
+      ans[k][n]=i;
+      ll=l<<1;  cc=c; rr=r>>1;
+      queen(ll|(1<<i+1),cc|(1<<i),rr|(1<<i-1),n+1);
+    }
+  }
+}
+int main()
+{
+  int l=0,c=0,r=0;
+  int i,j;
+  for(i=1;i<=9;i++)
+  {
+    l=1<<(i+1);
+    c=1<<i;
+    r=1<<(i-1);
+    ans[k][0]=i;
+    queen(l,c,r,1);
+  }
+  printf("%d\n",k);
+  for(i=0;i<k;i++)
+  {
+    for(j=0;j<9;j++)
+      printf("%d ",ans[i][j]);
+    printf("\n");
+  }
+  return 0;
+}
+```

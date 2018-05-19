@@ -1,0 +1,96 @@
+#L - 神秘组织的的分数
+这题正好在大白书上看到，叫埃及分数，主要的方法是迭代加深搜索。
+
+* 因为不知道需要多少个埃及分数相加才能得到结果，同时有要求最小的分数最大  
+（这就要求前面的数尽可能小，也就是分母尽可能大。可是总不能往无穷去吧，  
+所以开始搜索的位置都不好确定）。又要求数量最少，这一般是用BFS。可是同上，  
+以为不知道最开始的一个数的分母能大到哪去，因此BFS一层都无法表示。
+* 这时就需要DFS。因为要最少的分数个数，所以让DFS搜索的层数由小到大递增，  
+这个过程就是迭代加深。当搜到某一层出结果时，就能退出，否则就一直增加深  
+度往下搜
+* 但是这题的题意我感觉有点问题。比如：
+```
+a=59
+b=211
+ans1:6 9 633 3798
+ans2:4 36 633 3798
+```
+这两个答案都是对的，但哪个更优？按照题目数据，AC答案是2。但题目只要求最小  
+的分数越大，而这两个答案最小分数都是一样的，那么这两个结果应该都是正确的。  
+而照大白书的写法，得出的是答案1。此处巨坑。
+
+代码:
+```
+#include <bits/stdc++.h>
+using namespace std;
+long long a,b,maxdep;
+long long ans[1000]={0},v[1000];
+long long getdiv(long long aa,long long bb)
+{
+	long long i,gcd,lcm;
+	for(i=1;;i++)
+	{
+		gcd=__gcd(i,bb);
+		lcm=gcd*i/gcd*bb/gcd;
+		if(lcm/i<=aa*(lcm/bb))	return i;
+	}
+}
+bool better(long long dep)
+{
+	/*
+	long long i;
+	for(i=dep;i>=0;i--)
+	{
+		if(ans[i]!=v[i])
+		return ans[i]==0||v[i]<ans[i];
+	}
+	return false;*/
+	//注释掉的是得出答案1的判断条件
+	return ans[dep]==0||v[dep]<ans[dep];
+}
+bool dfs(long long dep,long long from,long long aa,long long bb)
+{
+	long long i,j,k,l,gcd,lcm,a1,b1;
+	bool find=false;
+	if(dep==maxdep)
+	{
+		if(bb%aa)	return false;
+		v[dep]=bb/aa;
+		if(v[dep]==v[dep-1])	return false;
+		if(better(dep))	memcpy(ans,v,sizeof(long long)*(dep+1));
+		return true;
+	}
+	from=max(from,getdiv(aa,bb));
+	for(i=from;;i++)
+	{
+		if(bb*(maxdep-dep+1)<aa*i)	break;
+		gcd=__gcd(bb,i);
+		lcm=gcd*(i/gcd)*(bb/gcd);
+		a1=aa*(lcm/bb)-(lcm/i);;
+		b1=lcm;
+		gcd=__gcd(a1,b1);
+		v[dep]=i;
+		if(dfs(dep+1,i+1,a1/gcd,b1/gcd)) find=true;
+	}
+	return find;
+}
+int main()
+{
+	long long i;
+	cin>>a>>b;
+	if(b%a==0)
+	{
+		i=__gcd(a,b);
+		cout<<b/i<<endl;
+		return 0;
+	}
+	for(maxdep=1;;maxdep++)
+	{
+		if(dfs(0,getdiv(a,b),a,b))	break;
+	}
+	for(i=0;i<maxdep;i++)
+		cout<<ans[i]<<" ";
+	cout<<ans[i]<<endl;
+	return 0;
+}
+```

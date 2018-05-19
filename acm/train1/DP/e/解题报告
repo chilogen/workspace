@@ -1,0 +1,144 @@
+# E - 都市大飙车
+
+* 下一公里的每一车道的概率有上一公里的两个相邻车道(如果有)，和本车道决定，设  
+`dp[i][j]`表示 在第 ‘i’ 公里处 ‘j’ 车道的概率，那么假设左右都有车道(且不是边缘车道)  
+的话，`dp[i][j]=dp[i-1][j-1]/3+dp[i-1][j]/3+dp[i-1][j+1]/3`，当遇到边缘车道时特  
+殊处理。
+
+* 假设 第 ‘i’ 公里的第 ‘j’ 车道有障碍物，则`dp[i][j]=0`
+
+* 然后，可以压一下内存，因为从递推式可以看出，需要保存的只有两公里的车道概率，  
+所以空间复杂度应为 `O(2*m)` ，而不是 `O(n*m)`
+
+* 思路很自然，但这是我WA最多的一道题(其实也没做过多少题)。问题出现在除法的精  
+度。我是这样想的，假设没做一次除法损失 看k*1e-17(用调试发现double大概能精确  
+到小数点后18位)，假设不考虑边缘车道的情况，那么要得到每一公里处的每一车道要  
+做3次除法，所以总共要做`3*m*n`次除法，总误差就是`3*k*m*n*1e-17`，那么最  
+大误差应接近`3*k*3*1e4*1e3*1e-17=9*k*1e-10`，离6位精确度还差得远，不应  
+该有问题。
+
+* 没办法就 xjb改，加了一个放大倍数 RATE,通过修改这个放大倍数，能改变WA的  
+位置，可是无论怎么改都不能AC，我怀疑是想法错了，于是放弃等周六讲座。
+
+* 可是，讲座上讲的方法和这也差不多，通过向讲题人求救，得到了一个神奇的RATE  
+值---1000,然后就 AC 了....
+
+代码：
+```c
+/*
+  
+                                _oo0oo_
+                               088888880
+                               88" . "88
+                               (| -_- |)
+                                0\ = /0
+                             ___/'---'\___
+                           .' \\\\|     |// '.
+                          / \\\\|||  :  |||// \\
+                         /_ ||||| -:- |||||- \\
+                        |   | \\\\\\  -  /// |   |
+                        | \_|  ''\---/''  |_/ |
+                        \  .-\__  '-'  __/-.  /
+                      ___'. .'  /--.--\  '. .'___
+                   ."" '<  '.___\_<|>_/___.' >'  "".
+                  | | : '-  \'.;'\ _ /';.'/ - ' : | |
+                  \  \ '_.   \_ __\ /__ _/   .-' /  /
+              ====='-.____'.___ \_____/___.-'____.-'=====
+                                '=---='
+
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             AC  AC  AC  AC  AC  AC  AC  AC  AC  AC  AC  AC
+     
+*/
+#include <bits/stdc++.h>
+#define RATE 1000
+struct block
+{
+	int r,dist;
+}a;
+using namespace std;
+struct cmp
+{
+	bool operator()(const block &a,const block &b)	{return a.dist>b.dist;}
+};
+int main()
+{
+	//freopen("abc.in","r",stdin);
+	int m,k,n,p,i,j,l,point=0;
+	double road[2][30001],ans=RATE;
+	priority_queue <block,vector<block>,cmp> q;
+	memset(road,0,sizeof(road));
+	scanf("%d%d%d%d",&m,&k,&n,&p);
+	road[point][p]=RATE;
+	for(i=0;i<k;i++)
+	{
+		scanf("%d%d",&a.r,&a.dist);
+		q.push(a);
+	}
+	if(k==0)
+	{
+		printf("1.000000");
+		return 0;
+	}
+	a=q.top();	q.pop();
+	if(m==1)
+	{
+		for(i=1;i<=n;i++)
+		{
+			if(a.dist==i)	break;
+		}
+		if(n>=i)	printf("0.000000");
+		else printf("1.000000");
+		return 0;
+	}
+	for(i=1;i<=n;i++)
+	{
+		l=!point;
+		for(j=1;j<=m;j++)
+		{
+			if(j==1&&m==3)
+			{
+				road[l][j]=road[point][1]/2+road[point][2]/3;
+				j++;
+				road[l][j]=road[point][1]/2+road[point][2]/3+road[point][3]/2;
+				j++;
+				road[l][j]=road[point][2]/3+road[point][3]/2;
+				continue;
+			}
+			if(j==1&&m==2)
+			{
+				road[l][j]=road[point][1]/2+road[point][2]/2;
+				j++;
+				road[l][j]=road[point][1]/2+road[point][2]/2;
+				continue;
+			}
+			if(j==1&&m>3)
+			{
+				road[l][j]=road[point][1]/2+road[point][2]/3;
+				j++;
+				road[l][j]=road[point][1]/2+road[point][2]/3+road[point][3]/3;
+				continue;
+			}
+			if(j==m-1)
+			{
+				road[l][j]=road[point][j-1]/3+road[point][j]/3+road[point][j+1]/2;
+				j++;
+				road[l][j]=road[point][j-1]/3+road[point][j]/2;
+				continue;
+			}
+			road[l][j]=road[point][j-1]/3+road[point][j]/3+road[point][j+1]/3;
+		}
+		point=l;
+		while(a.dist==i)
+		{
+			ans-=road[point][a.r];	road[point][a.r]=0;
+			if(q.empty())	break;
+			a=q.top();	q.pop();
+		}
+	}
+	printf("%.6lf",ans/RATE);
+	//fclose(stdin);
+	return 0;
+}
+
+```

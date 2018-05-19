@@ -1,0 +1,56 @@
+#D - 难喝的饮料
+>这也许是最简单的一题，是混合背包问题，背包九讲里有介绍
+
+* 对应关系
+	* 不能超过K的难受程度，K就对应背包的容量了  
+	* 每瓶饮料能补充水分*a*，a 对应的就是物品的价值  
+	* 每瓶饮料增加难受程度*b*，b对应的就是物品的花费  
+	* 饮用水可以无限取用，对应的就是完全背包问题  
+	* 苏打水只有一瓶，对应的就是01背包问题
+* 所以，只要判定 t的值，分别调用01背包和完全背包求解就行了
+
+
+代码：
+```c
+#include <bits/stdc++.h>
+int w[20001],v[20001],mark[20001],cap[10001];
+int n,k;
+int max(int a,int b)
+{
+	if(a>b)	return a;
+	return b;
+}
+void zopack(int i,int w,int v)
+{
+	int j;
+	for(j=k;j>=0;j--)
+	{
+		if(j-w>=0)	cap[j]=max(cap[j],cap[j-w]+v);
+		else break;
+	}
+}
+void com(int i,int w,int v)
+{
+	int j;
+	for(j=0;j<=k;j++)
+	{
+		if(j-w>=0)	cap[j]=max(cap[j],cap[j-w]+v);
+		else continue;
+	}
+}
+int main()
+{
+	int i,j,l;
+	memset(cap,0,sizeof(cap));
+	scanf("%d%d",&n,&k);
+	for(i=1;i<=n;i++)
+		scanf("%d%d%d",&mark[i],&v[i],&w[i]);
+	for(i=1;i<=n;i++)
+	{
+		if(mark[i]==1)	com(i,w[i],v[i]);
+		else if(mark[i]==2)	zopack(i,w[i],v[i]);
+	}
+	printf("%d\n",cap[k]);
+	return 0;
+}
+```

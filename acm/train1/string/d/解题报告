@@ -1,0 +1,38 @@
+#D - 一道更简单的字符串题
+* 在讲课时讲到的最短KMP next数组求最短循环节，这题长得不一样，但正好刚写完a题，  
+抱着试试的想法直接照搬，竟然是对的。  
+* 先假设字符串B包含n 个完整的循环节，根据next数组的性质,当循环节第二次出现的时  
+候，next的值会随着字符串的长度增加，速度和字符串增长的速度是一样的，所以用字  
+符串长度减去next数组，得到的就是循环节第二次出现的位置，所以就是循环节的长度。
+* 当字符串B不包含原A串中的完整循环节时，next数组中的值增长速度还是和字符串长度  
+增长速度是一致的，这时忽略A，只考虑B，发现B中也是存在自己的循环节的。例如  
+`cdabcdabcd`,的循环节可以认为是`cdab`，因为B是从A中截取的，所以B的循环节长  
+度和A的相一致，所以，求B的循环节长度，也就是在求A的循环节长度。而求B循环节的  
+长度，就和上面讨论的一样，等于`strlen-next[i]`。
+代码:
+```
+#include <bits/stdc++.h>
+#include <cstring>
+using namespace std;
+#define reset(a,b) memset(a,b,sizeof(a))
+int main()
+{
+	long int n,i,j,k;
+	char s[1000001];
+	long int *m;
+	m=new long[1000000+1];
+	reset(m,0);
+	scanf("%s",s+1);
+	s[0]='a';
+	n=strlen(s)-1;
+	j=0;
+	for(i=2;i<=n;i++)
+	{
+		while(j>0&&s[j+1]!=s[i])	j=m[j];
+		if(s[j+1]==s[i])	j++;
+		m[i]=j;
+	}
+	printf("%ld",n-m[n]);
+	return 0;
+}
+```

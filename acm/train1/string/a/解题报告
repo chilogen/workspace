@@ -1,0 +1,41 @@
+#A - 一道简单的字符串题
+因为答案与前缀有关，可能与KMP有关。思考KMP的性质，用算法导论上的写法，  
+**m[i]**代表模式串从第**i**位往前数**m[i]**个字符，与模式串开头的**m[i]**个字符相同，这  
+里的**m[i]**取最大值。因此，当获得kmp数组后，从头遍历kmp数组，设dp[i]为  
+长度为**i**的串包含的前缀个数，就能得到一个递推式`dp[i]=dp[m[i]+1]`。意思是  
+以**i**为结尾的串包含的前缀数量等于从1开始，它包含的最长前缀所包含的前缀数量加  
+上由1到i这个前缀，最终的答案就是sum(dp[1,dp[strlen]])。
+代码：
+```
+#include <bits/stdc++.h>
+#define reset(a,b) memset(a,b,sizeof(a))
+int main()
+{
+	long int n,i,j,k;
+	char *s;
+	long int *m,*dp;
+	scanf("%ld",&n);
+	s=new char[n+1];
+	m=new long[n+1];
+	dp=new long[n+1];
+	scanf("%s",s+1);
+	reset(m,0);
+	reset(dp,0);
+	j=0;
+	for(i=2;i<=n;i++)
+	{
+		while(j>0&&s[j+1]!=s[i])	j=m[j];
+		if(s[j+1]==s[i])	j++;
+		m[i]=j;
+	}
+	long int sum=0;
+	for(i=1;i<=n;i++)
+	{
+		dp[i]=(dp[m[i]]+1)%10007;
+		sum+=dp[i];
+		sum%=10007;
+	}
+	printf("%ld",sum);
+	return 0;
+}
+```

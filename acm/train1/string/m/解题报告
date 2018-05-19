@@ -1,0 +1,59 @@
+#M - 咸鱼谭的难题
+地图范围就6*6，看到的第一感觉是不是题目写错了。毕竟集训选拔好像没有过这么  
+小的输入，也许是用多组数据增加运行时间吧。
+
+* 直接从起点开始，上下左右跑，跑过后把身后的门关上（标记为'X'），即表示不能  
+再回来了。跑到't'秒时，检查是否到达终点。没到换个方向继续跑。到了就输出“YES”。
+
+* 仔细一想。虽说只有36格，但如果出现类似与绕圈跑，然后终点在正中间的情况，就  
+跑了35层，然后到达时间又总是不对，就这么一直乱跑，时间花销还是会很大。这时  
+就需要剪枝。矩形中有一个性质，从某点到某点的步数奇偶性是不随着路径的变化而  
+改变的，这好像是图论专题中有道题讲过。所以在最开始加一个判断，如果奇偶性都不  
+满足，这组数据就没必要算了。
+
+代码：
+```
+#include <bits/stdc++.h>
+using namespace std;
+int m,n,ex,ey;
+bool dfs(int sx,int sy,int t,char ma[6][6])
+{
+	int i,j,k,l;
+	char c=ma[sx][sy];
+	ma[sx][sy]='X';
+	if(t==0&&sx==ex&&sy==ey)	return true;
+	if(t==0) {ma[sx][sy]=c;		return false;}
+	if(sx>0)
+		if(ma[sx-1][sy]!='X')	if(dfs(sx-1,sy,t-1,ma))	return true;
+	if(sy>0)
+		if(ma[sx][sy-1]!='X')	if(dfs(sx,sy-1,t-1,ma))	return true;
+	if(sx<n-1)
+		if(ma[sx+1][sy]!='X')	if(dfs(sx+1,sy,t-1,ma))	return true;
+	if(sy<m-1)
+		if(ma[sx][sy+1]!='X')	if(dfs(sx,sy+1,t-1,ma))	return true;
+	ma[sx][sy]=c;
+	return false;
+}
+int main()
+{
+	int t,i,j,k,l,sx,sy;
+	char ma[6][6];
+	cin>>n>>m>>t;
+	while(n||m||t)
+	{
+		for(i=0;i<n;i++)
+			for(j=0;j<n;j++)
+			{
+				cin>>ma[i][j];
+				if(ma[i][j]=='\n'||ma[i][j]=='\0'){j--;	continue;}
+				if(ma[i][j]=='S')	{sx=i;	sy=j;}
+				if(ma[i][j]=='D')	{ex=i;	ey=j;}
+			}
+		if((abs(sx-ex+sy-ey))%2!=t%2)	{cout<<"NO"<<endl;	cin>>n>>m>>t;	continue;}
+		if(dfs(sx,sy,t,ma))	cout<<"YES"<<endl;
+		else cout<<"NO"<<endl;
+		cin>>n>>m>>t;
+	}
+	return 0;
+}
+```
