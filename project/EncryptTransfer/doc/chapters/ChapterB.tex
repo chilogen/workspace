@@ -1,0 +1,120 @@
+% !Mode:: "TeX:UTF-8"
+
+\chapter{TCP与ENPTP协议}
+\label{Chapter::two}
+
+自定义应用层协议ENPT通过调用运输层面向连接的TCP协议完成通信过程
+\section{TCP协议}
+TCP是因特网运输层面向连接的可靠传输协议，依赖于差错检测、重传、累计确认、定时器等原理。TCP定义在RFC 793、RFC 1122、RFC 1323、RFC 2018以及RFC 2581中。
+
+\subsection{TCP套接字}
+\label{section::TCPsocket}
+运输层协议为了实现将由网络层提供的主机到主机交付服务延伸为运行在主机上的应用程序之间进程到进程的交付服务，采用了多路复用和多路分解技术。为了定位到具体的进程，需要IP地址和程序监听的端口，IP与端口就构成了一个套接字。UDP协议使用一个二元组来标识一个套接字，该二元组包含一个目的IP地址和一个目的端口号。而TCP协议使用一个四元组标识一个套接字，包括源IP地址、源端口号、目的IP地址、目的端口号。进程之间相互通信只需将数据传进套接字，TCP将会确保它正确的到达目的地。
+如下为套接字在一次通信过程中的展示：
+图中主机C向服务器B发起两个HTTP会话，主机A向向服务器B发起了一个HTTP会话。主机A、C与服务器B都有自己的唯一IP地址，分别为A、C、B。主机C为其两个HTTP连接分配了两个不同的源端口号（26145和7532）。因为主机A选择源端口号时与主机C互不相干，因此它也可以将源端口号26145分配给其HTTP连接。因为它们具有不同的源IP地址，服务器B仍然能正确地分解这两个具有相同源端口号的连接。
+（缺图--计算机网络P131）
+
+\noindent 为了生成一个TCP套接字，在C语言下要将一个文件描述符绑定到一个socket：
+\begin{verbatim}
+fd=socket(AF_INET,SOCKSTREAM,0)
+\end{verbatim}
+
+\noindent 而Python下只需：
+\begin{verbatim}
+tsock=socket(AF_INET,SOCK_STREAM)
+\end{verbatim}
+
+本节建立的套接字将用在\ref{section::TCPconnect}和\ref{section::TCPtransport}。
+
+\subsection{TCP连接}
+\label{section::TCPconnect}
+TCP被称为面向连接的，因为在一个应用进程开始向另一个应用进程发送数据之前，这两个进程必须先相互“握手”。它们必须相互发送某些预备报文段，以建立确保数据传输的参数，比如初始保报文号等。作为TCP连接建立的一部分，连接的双方都将初始化与TCP连接相关的许多TCP状态变量。
+
+\noindent 在C与语言中，服务端需要先使用：
+\begin{verbatim}int listen(int sockfd, int backlog)\end{verbatim}
+指定连接套接字，然后使用：
+\begin{verbatim}int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)\end{verbatim}
+接受连接并返回新的连接套接字，此时客户端就可以使用：
+\begin{verbatim}int connect(int socket, const struct sockaddr *address, socklen_t
+address_len)\end{verbatim}
+服务端与客户端建立连接
+
+\noindent 在Python中就简单一些，服务器直接调用\verb|socket|的\verb|listen|方法，客户端调用\verb|connect|方法，即能建立连接
+
+一旦连接建立两个进程之间就可以相互发送数据了，具体细节在下节讨论。
+
+\subsection{TCP数据传输与接收}
+\label{section::TCPtransport}
+TCP连接提供的是全双工服务，意思是在一条TCP连接上既可以传输数据，又可以接收数据。应用层协议将数据推进套接字，它就由系统中运行的TCP控制了，如图(缺图：计算机网络p157-3-28)。TCP将这些数据引导到该连接的发送缓存里，接下来TCP将会“不时”从发送缓存里取出一块数据进行发送。当TCP在另一端接收到一个报文后，该报文的数据就会被放入该连接的TCP接受缓存中，应用层协议从此缓存中读取数据流。
+
+\noindent 在C语言中，使用:
+\begin{verbatim}ssize_t read(int fd, void *buf, size_t count)\end{verbatim}
+从缓存中读取指定字节的数据，使用：
+\begin{verbatim}ssize_t write(int fd, const void *buf, size_t count)\end{verbatim}
+向缓存中写入数据，fd就是在\ref{section::TCPsocket}中套接字绑定的文件描述符
+
+\noindent 在Python下只需调用\verb|socket的 send 和 recv 方法|
+
+\section{ENPTP协议}
+\label{section::ENPTP}
+加密传输协议（ENcryPt Transport Protocol）,简称ENPTP,是专门为本次课程设计的一个应用层协议，本节将具体描述它的语义，语法，时序以及包结构。
+
+\subsection{ENPTP报文及其语义}
+本节描述了ENPTP协议传输过程中的3种报文。
+\begin{enumerate}
+
+\item 连接报文，用来建立连接时传递信息（缺图）
+\begin{itemize}
+\item 一字节服务器状态标识符。
+
+0x00表示告知客户端稍等再请求连接，0x01表示可以开始传输，0x02表示服务器拒绝连接。
+\item 512字节RSA公钥。
+
+若服务器状态标识符为0x01，该字段承载用于加密AES密钥的RSA公钥，否则为空。
+\item 加密的AES密钥。
+
+若服务器状态标识符为0x1，该字段承载经过RSA加密，用于数据加密的AES密钥。
+\end{itemize}
+
+\item 传输报文，用来传输数据并维护传输信息（缺图）
+\begin{itemize}
+\item 一字节传输状态标识符。
+
+服务器将其置1表示完成收到报文并将其解密存储的过程，客户端将其置1表示整个文件已经传输完毕。
+\item 两字节的密文长度。
+
+表示经过加密后下次将要发送的密文长度，服务器根据该段设置接受缓存长度。
+\item 一字节的明文长度。
+
+表示未经加密的明文长度，服务器根据该段处理前导0的情况。
+\end{itemize}
+\item 数据报文。
+
+包含加密后的数据，变长段。
+\end{enumerate}
+
+\subsection{ENPTP语法}
+本节描述了ENPTP协议中服务端的连接控制，数据解密与及客户端的连接请求和数据加密并发送功能或过程。
+
+\begin{enumerate}
+\item 服务器连接控制
+
+服务器维护着一个线程号列表，该列表既用来进行进程控制，也用来统计系统资源使用情况。通过设置最大线程数，服务器将在线程列表占满时，拒绝新的连接，知道有之前的连接释放，从而实现简单的资源控制，避免服务器因同时连接太多客户端进行传输耗尽系统资源从而崩溃。
+\item 服务器数据解密
+
+通过RSA私钥解密传输头部报文中获取的AES密钥，没收到一份数据报文，调用AES解密并将数据存入磁盘。
+\item 客户端连接请求
+
+客户端向服务器监听套接字发送连接请求，接收连接报文，若报文服务器状态标识符为0x00，则等待一段时间后在从新发送连接请求；若服务器状态标识符为0x01，则从RSA段提取RSA公钥，用于加密AES密钥,并将加密后的AES密钥放入连接报文中发送给服务端；若服务器状态标识符为0x02，则通知用户服务器端已终止服务。
+\item 客户端加密数据并发送
+
+客户端读取数据调用AES加密，然后构建传输报文和数据报文，先后将传输报文和数据报文发送给服务器端。
+\end{enumerate}
+
+\subsection{ENPTP时序}
+本节通过描述一个例子讲述ENPTP传输过程。（缺图）
+
+服务器A上运行着一个ENPTP服务端，主机B和C分别运行着一个ENPTP客户端。
+
+\section{本章小结}
+本章首先介绍了传输层公用的TCP协议，然后对私有协议ENPTP进行了具体描述，理清了客户端与服务器端通信的具体过程，本章与
