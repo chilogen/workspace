@@ -5,11 +5,15 @@
 #include <encrypttransfer.h>
 using namespace enp;
 
+
+
+
+
 RSA::RSA() {}
 
 void RSA::setkey(mpz_class n, mpz_class d) {
     key_n = n;
-    key_d = d;
+    key_e = d;
 }
 
 bool RSA::setkey(int i) {
@@ -33,7 +37,7 @@ bool RSA::setkey(int i) {
     }
     readkey(path);
     if(!checkkey()){
-        cerr<<"key file broken,run regenkey\n";
+        //cerr<<"key file broken,run regenkey\n";
         genkey();
     }
 }
@@ -87,12 +91,12 @@ void RSA::genkey() {
 
 mpz_class RSA::encrypt(mpz_class plainttext) {
     mpz_class ciphertext;
-    mpz_powm(ciphertext.get_mpz_t(), plainttext.get_mpz_t(), key_d.get_mpz_t(), key_n.get_mpz_t());
+    mpz_powm(ciphertext.get_mpz_t(), plainttext.get_mpz_t(), key_e.get_mpz_t(), key_n.get_mpz_t());
     return ciphertext;
 }
 mpz_class RSA::decode(mpz_class ciphertext) {
     mpz_class plainttext;
-    mpz_powm(plainttext.get_mpz_t(), ciphertext.get_mpz_t(), key_e.get_mpz_t(), key_n.get_mpz_t());
+    mpz_powm(plainttext.get_mpz_t(), ciphertext.get_mpz_t(), key_d.get_mpz_t(), key_n.get_mpz_t());
     return plainttext;
 }
 
@@ -124,4 +128,53 @@ bool RSA::checkkey() {
     mpz_gcd(tmp.get_mpz_t(),key_e.get_mpz_t(),key_n.get_mpz_t());
     if(tmp!=1)return false;
     return true;
+}
+
+void AES::genkey() {
+    unsigned char k[AES_BLOCK_SIZE];
+    int i;
+    srand((unsigned)time(NULL));
+    for(i=0;i<16;i++)k[i]=rand()%256;
+    memcpy(key,k,sizeof(key));
+    AES_KEY tk;
+    if(method==ENCRYPT)AES_set_encrypt_key(k,128,&tk);
+    if(method==DECRYPT)AES_set_decrypt_key(k,128,&tk);
+    aeskey=tk;
+}
+
+void AES::setkey(unsigned char * k) {
+    memcpy(key,k,sizeof(key));
+    AES_KEY tk;
+    if(method==ENCRYPT)AES_set_encrypt_key(k,128,&tk);
+    if(method==DECRYPT)AES_set_decrypt_key(k,128,&tk);
+    aeskey=tk;
+}
+
+void AES::readkey(string path) {
+    ifstream fin(path, ios::in);
+
+    if (!fin.is_open()) {
+        cerr << "NO such key file\n";
+        cerr<<"run regenkey\n";
+        genkey();
+    }
+    unsigned char k[AES_BLOCK_SIZE];
+    fin >> k;
+    memcpy(key,k,sizeof(key));
+    fin.close();
+
+}
+
+void AES::getkey(unsigned char *tkey) {
+    memcpy(tkey,key,sizeof(unsigned char)*AES_BLOCK_SIZE);
+}
+
+void AES::encrypt(unsigned char *in, unsigned char *out) {
+    AES_KEY tk=aeskey;
+    AES_encrypt(in,out,&tk);
+}
+
+void AES::decrypt(unsigned char *in, unsigned char *out) {
+    AES_KEY tk=aeskey;
+    AES_decrypt(in,out,&tk);
 }

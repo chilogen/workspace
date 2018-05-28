@@ -33,44 +33,25 @@ namespace enp {
         size = s;
     }
 
-    void IO::operator<<(mpz_class data) {
+    void IO::operator<<(unsigned char *data) {
         if (Openmode != (ios::out | ios::binary)) {
             cerr << "ERROR open mode\n";
             return;
         }
 
-        char buf[1024];
-
         int i;
-        unsigned long k;
-        for (i = 0; i < size; i++)buf[i] = 0;
-        mpz_class tmp;
-
-        for (i = size-1; i >= 0; i--) {
-            tmp=data%256;
-            k=mpz_get_ui(tmp.get_mpz_t());
-            data>>=8;
-            buf[i]=k;
-        }
-        for (i = 0; i < size; i++)//stream << buf[i];
-            stream.write(&buf[i],sizeof(char));
+        for(i=0;i<size/8;i++)stream.write((char*)&data[i],sizeof(unsigned char));
     }
 
-    uint8_t IO::operator>>(mpz_class &data) {
+    uint8_t IO::operator>>(unsigned char* data) {
         if (Openmode != (ios::in | ios::binary)) {
             cerr << "ERROT open mode\n";
             return 0;
         }
-        uint8_t i;
-        unsigned char j;
-        //error: char j;
-        data = 0;
-        for (i = 0; i < size; i++){
-            //stream>>j;
-            stream.read((char*)&j,sizeof(j));
-            if(stream.eof())return i;
-            data<<=8;
-            data+=j;
+        int i;
+        for(i=0;i<size/8;i++){
+            stream.read((char*)&data[i],sizeof(unsigned char));
+            if(stream.eof())return i*8;
         }
         return size;
     }

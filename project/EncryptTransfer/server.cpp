@@ -10,94 +10,82 @@ using namespace enp;
 NET server;
 
 void* serverfun(void *args) {
-    signal(SIGPIPE, SIG_IGN);
+    signal(SIGPIPE,SIG_IGN);
     uint32_t pidind = ((funparm *) args)->pidind;
-    uint32_t fd = ((funparm *) args)->fd;;
+    uint32_t fd = ((funparm *) args)->fd;
     int encodemethod=((funparm *)args)->encodemethod;
-    char buffer[5000];
+
     char filename[4096];
-    mpz_class tmp;
-    char* tmp1;
+    unsigned char plaintext[AES_BLOCK_SIZE],ciphertext[AES_BLOCK_SIZE];
 
-    RSA coder;
-    coder.setkey(encodemethod);
-    Dataheader DH;
+    RSA rsacoder;
+    AES aescoder(DECRYPT);
+    pair<mpz_class,mpz_class>rsakey;
+    unsigned char aeskey[AES_BLOCK_SIZE];
+
+
+    //set coder and get key
+    rsacoder.setkey(encodemethod);
+    rsakey=rsacoder.getpublickey();
+
     Header H;
-    pair<mpz_class,mpz_class>p=coder.getpublickey();
-    H.set(p.first,p.second);
-    tmp1=(char*)&H;
-#ifdef DEBUG
-    cout<<sizeof(H)<<endl;
-#endif
-    if(!Send(tmp1,sizeof(H),fd)){
+    Dataheader DH;
+
+    //set Header and send it
+    H.ServerSet(rsakey.first,rsakey.second);
+    if(!Send(&H,sizeof(H),fd)){
         close(fd);
         cerr<<"Transfe closed\n";
-        while (freepidlock);
-        freepidlock=true;
+        pthread_mutex_lock(&freepidlock);
         freepid.push(pidind);
-        freepidlock= false;
+        pthread_mutex_unlock(&freepidlock);
         return (void *) NULL;
     }
-
-    tmp1=filename;
-#ifdef DEBUG
-    cout<<sizeof(filename)<<endl;
-#endif
-    if(!Recv(tmp1,FILENAMELEN,fd)){
+    //receive header from client
+    if(!Recv(&H,sizeof(H),fd)){
         close(fd);
         cerr<<"Transfe closed\n";
-        while (freepidlock);
-        freepidlock=true;
+        pthread_mutex_lock(&freepidlock);
         freepid.push(pidind);
-        freepidlock= false;
+        pthread_mutex_unlock(&freepidlock);
         return (void *) NULL;
     }
+    g2x(aeskey,rsacoder.decode(x2g((unsigned char*)&H.aeskey,H.lenaeskey)));
+    aescoder.setkey(aeskey);
 
-    DH.end = 0;
-    IO fout(filename, ios::out | ios::binary);
-    Dataheader *tmp2 = &DH;
-    tmp1 = buffer;
-    while (DH.end!=1) {
-        if (!Recv(tmp2, sizeof(DH), fd)){
+
+    cout<<"Start recv "<<H.filename<<"......"<<endl;
+
+    IO fout(H.filename,ios::out|ios::binary);
+    unsigned long long ack,totle=H.filesize;
+    for(ack=0;ack<totle;ack++){
+        if(!Recv(&DH,sizeof(DH),fd)||!Recv(ciphertext,16,fd)){
             close(fd);
             cerr<<"Transfe closed\n";
-            while (freepidlock);
-            freepidlock=true;
+            pthread_mutex_lock(&freepidlock);
             freepid.push(pidind);
-            freepidlock= false;
+            pthread_mutex_unlock(&freepidlock);
             return (void *) NULL;
         }
-        if (!Recv(tmp1, DH.ciphertextlen, fd)){
-            close(fd);
-            cerr<<"Transfe closed\n";
-            while (freepidlock);
-            freepidlock=true;
-            freepid.push(pidind);
-            freepidlock= false;
-            return (void *) NULL;
-        }
-#ifdef DEBUG
-        cout<<buffer<<endl;
-#endif
-        tmp = x2g(buffer, DH.ciphertextlen);
-#ifdef DEBUG
-        cout<<"密文 ："<<tmp<<endl;
-#endif
-        tmp=coder.decode(tmp);
-#ifdef DEBUG
-        cout<<"明文 ："<<tmp<<endl;
-#endif
         fout.setsize(DH.plaintextlen);
-        fout << tmp;
+        memset(plaintext,0,sizeof(plaintext));
+        aescoder.decrypt(ciphertext,plaintext);
+        fout<<plaintext;
+        if(ack%1000000!=0)continue;
+        if(!Send(&ack,sizeof(unsigned long long),fd)){
+            close(fd);
+            cerr<<"Transfe closed\n";
+            pthread_mutex_lock(&freepidlock);
+            freepid.push(pidind);
+            pthread_mutex_unlock(&freepidlock);
+            return (void *) NULL;
+        }
     }
-    if(!Send(&ENDFLAG,sizeof(ENDFLAG),fd))
-        cerr<<"Transfer fail\n";
-    else cerr<<"Transfer Compelete\n";
-    close(fd);
-    while (freepidlock);
-    freepidlock = true;
+
+    pthread_mutex_lock(&freepidlock);
     freepid.push(pidind);
-    freepidlock = false;
+    pthread_mutex_unlock(&freepidlock);
+    cout<<H.filename<<" compelete recv\n";
 }
 
 void help(){
@@ -127,6 +115,7 @@ int main(int argv,char **argc) {
     pair<uint32_t, uint32_t> p;
     int encodemethod=argc[2][0]-'0';
     server.init((char *) NULL, serverport, SERVER);
+    pthread_mutex_init(&freepidlock,NULL);
     cout << "server ready for transfer data...\n";
     while (1) {
         p = server.Listen();
@@ -134,5 +123,6 @@ int main(int argv,char **argc) {
         fp.set(p.first,p.second,encodemethod);
         pthread_create(&pid[p.first], NULL, serverfun, (void *)&fp);
     }
+    pthread_mutex_destroy(&freepidlock);
     return 0;
 }

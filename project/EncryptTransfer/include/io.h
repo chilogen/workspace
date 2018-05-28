@@ -17,9 +17,9 @@ namespace enp {
         fstream stream;
         _Ios_Openmode Openmode;
     public:
-        void operator<<(mpz_class data);
+        void operator<<(unsigned char*);
 
-        uint8_t operator>>(mpz_class &data);
+        uint8_t operator>>(unsigned char*);
 
         void setsize(uint16_t s);
 

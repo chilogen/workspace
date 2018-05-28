@@ -36,7 +36,7 @@ namespace enp {
     }
 
     template<class T>
-    bool Recv(T *&a, int size, uint32_t fd) {
+    bool Recv(T *a, int size, uint32_t fd) {
         int n;
         void *buf = (void *) a;
         n = read(fd, buf, size);

@@ -8,5 +8,5 @@ add_subdirectory(lib)
 
 add_executable(recv server.cpp)
 add_executable(sendto client.cpp)
-target_link_libraries(recv IO ENP NET RSA pthread)
-target_link_libraries(sendto IO ENP NET RSA)
+target_link_libraries(recv IO ENP NET CODER pthread)
+target_link_libraries(sendto IO ENP NET CODER pthread)

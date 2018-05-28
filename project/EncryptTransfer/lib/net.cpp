@@ -30,10 +30,9 @@ bool NET::init(char *ip, uint32_t port, int sc) {
     switch (sc) {
         case SERVER: {
             unsigned int i;
-            while(freepidlock);
-            freepidlock=true;
+            pthread_mutex_lock(&freepidlock);
             for(i=0;i<MAXPID;i++)freepid.push(i);
-            freepidlock=false;
+            pthread_mutex_unlock(&freepidlock);
             sock.sin_addr.s_addr = serverlistenaddr;
             bind(fd, (struct sockaddr *) &sock, sizeof(sock));
             listen(fd, 10);
@@ -71,12 +70,11 @@ pair<uint32_t,uint32_t > NET::Listen() {
     }
     while (true) {
         nfd = accept(fd, (struct sockaddr *) NULL, NULL);
-        while (freepidlock);
-        freepidlock = true;
+        pthread_mutex_lock(&freepidlock);
         if (!freepid.empty()) {
             pidind = freepid.front();
             freepid.pop();
-            freepidlock = false;
+            pthread_mutex_unlock(&freepidlock);
             if(!Send(&ServerReady,1,nfd)){
                 close(nfd);
                 cerr << "Server ERROR\n";
@@ -85,7 +83,7 @@ pair<uint32_t,uint32_t > NET::Listen() {
             cout<<"build a connection\n";
             break;
         } else {
-            freepidlock = false;
+            pthread_mutex_unlock(&freepidlock);
             if(!Send(&ServerNoReady,1,nfd)){
                 close(nfd);
                 cerr << "Server ERROR\n";
