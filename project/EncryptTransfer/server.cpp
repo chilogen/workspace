@@ -119,6 +119,7 @@ int main(int argv,char **argc) {
     cout << "server ready for transfer data...\n";
     while (1) {
         p = server.Listen();
+        if(serverreject)continue;
         funparm fp;
         fp.set(p.first,p.second,encodemethod);
         pthread_create(&pid[p.first], NULL, serverfun, (void *)&fp);

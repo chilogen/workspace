@@ -75,6 +75,7 @@ namespace enp {
 
     extern const uint8_t ServerNoReady;         //server not ready to receive data(set constant as 0)
     extern const uint8_t ServerReady;           //server ready to receive data(set constant as 1)
+    extern const uint8_t ServerClose;           //server close(set constant as 2)
     extern const uint32_t serverlistenaddr;     //server listen ip(set constant as any)
     extern const uint8_t ENDFLAG;               //mark the transfer is complete(success)(set constant as 0xff) of not
     extern const uint16_t DATALEN;              //data len encry per time(set constant as 127 byte)

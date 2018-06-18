@@ -69,7 +69,7 @@ int main(int argv,char **argc) {
     }
     char *serverip = argc[1];
     char filename[4096];
-    memcpy(filename,argc[2],sizeof(argc[2]));
+    memcpy(filename,argc[2],sizeof(char)*strlen(argc[2]));
     unsigned char plaintext[AES_BLOCK_SIZE],ciphertext[AES_BLOCK_SIZE];
 
     NET client;

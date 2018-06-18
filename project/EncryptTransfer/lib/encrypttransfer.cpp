@@ -10,6 +10,7 @@ namespace enp {
 
     const uint8_t ServerNoReady = 0;
     const uint8_t ServerReady = 1;
+    const uint8_t ServerClose = 2;
     const uint8_t ENDFLAG = 0xff;
     const uint32_t serverlistenaddr = htonl(INADDR_ANY);
     const uint16_t DATALEN = 128;

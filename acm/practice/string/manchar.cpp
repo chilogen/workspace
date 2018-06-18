@@ -25,14 +25,15 @@ private:
 	}
 public:
 	int* getp(string s){
-		int i,j,k,id,mx,l,len=s.length();
+		int i,id,mx,l,len=s.length();
 		s=preprocess(s);
 		l=s.length();
 		int* p=new int[l];
 		id=mx=0;
 		for(i=0;i<l;i++){
 			p[i]=mx>i?min(p[2*id-i],mx-i):1;
-			while(s[i-p[i]]==s[i+p[i]])p[i]++;
+			while(s[i-p[i]]==s[i+p[i]])
+				p[i]++;
 			if(mx<i+p[i]){
 				mx=i+p[i];
 				id=i;
