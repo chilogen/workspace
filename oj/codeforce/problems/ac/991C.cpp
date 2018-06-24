@@ -1,33 +1,27 @@
 #include <bits/stdc++.h>
 using namespace std;
-int main()
-{
-	int k[3],i,j;
-	for(i=0;i<3;i++)cin>>k[i];
-	sort(k,k+3);
-	if(k[0]==1)
-	{
-		cout<<"YES"<<endl;
-		return 0;
+typedef long long LL;
+LL n;
+bool check(LL k){
+	LL ans=0,t=n;
+	while(t>0){
+		t-=k;
+		if(t>0)t-=(t/10);
+		ans+=k;
 	}
-	else if(k[0]==2)
-	{
-		if(k[1]==2||(k[1]==k[2]&&k[1]==4))
-		{
-			cout<<"YES"<<endl;
-			return 0;
-		}
-		else
-		{
-			cout<<"NO"<<endl;
-			return 0;
-		}
+	ans+=t;
+	if(ans>=n/2+n%2)return 1;
+	else return 0;
+}
+int main(){
+	LL l,r,mid;
+	cin>>n;
+	l=1;r=n;
+	while(l<r){
+		mid=(l+r)>>1;
+		if(check(mid))r=mid;
+		else l=mid+1;
 	}
-	else if(k[0]==3)
-	{
-		if(k[1]==k[2]&&k[2]==3)	cout<<"YES"<<endl;
-		else cout<<"NO"<<endl;
-	}
-	else cout<<"NO"<<endl;
+	cout<<l<<endl;
 	return 0;
 }

@@ -1,16 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long LL;
-int main()
-{
-	LL n,a,b,na,nb,i,j,k,ans=0;
-	cin>>n>>a>>b;
-	for(na=1;na<n;na++)
-	{
-		nb=n-na;
-		i=a/na,j=b/nb,k=min(i,j);
-		if(k>ans)	ans=k;
+double a[100],sum=0,n;
+
+int main(){
+	int i,k;
+	cin>>n;
+	k=n;
+	for(i=0;i<k;i++){
+		cin>>a[i];
+		sum+=a[i];
 	}
-	cout<<ans<<endl;
+	sort(a,a+k);i=0;
+	while(sum/n<4.5){
+		sum+=(5-a[i]);
+		i++;
+	}
+	cout<<i<<endl;
 	return 0;
 }
