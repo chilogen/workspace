@@ -4,6 +4,10 @@
 *.out
 *.in
 abc.out
+pia.sh
+Utils.java
+test.cpp
+test.h
 
 #normal
 *.pdf
@@ -38,3 +42,4 @@ abc.out
 ./cmake-build-debug
 course
 duplicate
+*cmake-build-debug/

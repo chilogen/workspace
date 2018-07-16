@@ -70,6 +70,15 @@ pair<uint32_t,uint32_t > NET::Listen() {
     }
     while (true) {
         nfd = accept(fd, (struct sockaddr *) NULL, NULL);
+        if(serverreject){
+            if(!Send(&ServerClose,1,nfd)){
+                close(nfd);
+                cerr << "Server ERROR\n";
+                exit(1);
+            }
+            close(nfd);
+            break;
+        }
         pthread_mutex_lock(&freepidlock);
         if (!freepid.empty()) {
             pidind = freepid.front();
