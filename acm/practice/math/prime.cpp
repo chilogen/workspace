@@ -59,9 +59,9 @@ struct Prime{
 	}
 };
 int main(){
-	Prime a(100);
+	Prime a(100001);
 	a.init();
 	a.show();
-	cout<<a.isprime(99)<<endl; 
+	//cout<<a.isprime(99)<<endl; 
 	return 0;
 }
