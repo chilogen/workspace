@@ -1,0 +1,82 @@
+			ACM
+模板：
+	大数模板				check
+	中国剩余定理
+算法：
+	后缀数组
+	快速傅里叶变换			check
+	树链剖分				check
+ 	博弈论
+	容斥原理/莫比乌斯反演
+	SPFA				check
+	网络流
+		dinic			check
+		ISAP
+		预流推进
+	图同构
+	带花树
+	随机化算法
+
+复习：
+	AC自动机
+	LCA				check
+	ST表				check
+	day2 m
+	day5 d				check
+	treap				check
+
+巨坑：
+	字符串的find在某些oj上会错误	Gym 101341B 
+	sort中cmp函数中内容出现矛盾会造成无限循环导致RE	https://codeforces.com/contest/1009/problem/B
+	在包含了<bits/stdc++.h>的时候定义与y0,y1,yn等变量会报错（某些时候）lanuage/c++/InterestingError.cpp
+
+模板收集：
+	线段树：
+		最值查询
+		最右、最左某数查询
+	树状数组：
+		一维+二维
+	主席树
+	splay
+	BellmanFord			check
+			
+			SGX
+DSN18-endbox
+SGX配置
+设计模式
+
+
+			游戏
+XPlane Linux 测试
+FCTM
+Kerbal KRPC 测试
+Kerbal user's guide: an easy way to .....
+
+
+			书
+航天系统故障与对策
+黑客与画家
+kali 高级渗透
+有趣的二进制
+无线网络安全
+加密与解密
+
+
+			树莓派
+Tor
+Pia路由
+安装kali
+
+
+			随意
+Q#(os->tech)
+爬虫
+F1
+
+
+
+
+
+
+
+
