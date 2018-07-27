@@ -16,6 +16,28 @@
 	图同构
 	带花树
 	随机化算法
+	半平面交
+	构造题：
+		某个属性正好为k:
+			
+		    *2+1套路
+		    TCO16 Semi 1 MinimumCutsAgain [K个最小割]
+		    SRM 689 div1 MultiplicationTable3
+		    待定参数
+		    HDU 5334 Virtual Participation [K个不同子串]
+		    CODE FESTIVAL 2016 Grand Final G. FESTIVAL
+		    进制拆分
+		    SRM 693 div1 BipartiteConstruction [K个完备匹配]
+		    HDU 5332 Test for Rikka [K条路径]
+		    SRM 704 div1 HamiltonianConstruction [K条哈密顿路径]
+		    随机瞎搞
+		    UOJ #75 【UR #6】智商锁 [模意义下K棵生成树]
+	
+	矩阵题：
+		通过乘低维矩阵优化乘法复杂度（随机化方法判相等）
+		图上路径方案数的问题（上方构造题的HDU 5332）
+		递推式快速求解
+
 
 复习：
 	AC自动机
@@ -23,6 +45,8 @@
 	ST表				check
 	day2 m
 	day5 d				check
+	day8 f
+	day9 all
 	treap				check
 
 巨坑：
@@ -38,6 +62,7 @@
 		一维+二维
 	主席树
 	splay
+	kmp
 	BellmanFord			check
 			
 			SGX
