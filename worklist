@@ -37,6 +37,8 @@
 		通过乘低维矩阵优化乘法复杂度（随机化方法判相等）
 		图上路径方案数的问题（上方构造题的HDU 5332）
 		递推式快速求解
+	字典树空间优化
+	倍增算法
 
 
 复习：
@@ -47,12 +49,15 @@
 	day5 d				check
 	day8 f
 	day9 all
+	day10
+	Gym 101234A(超时)
 	treap				check
 
 巨坑：
 	字符串的find在某些oj上会错误	Gym 101341B 
 	sort中cmp函数中内容出现矛盾会造成无限循环导致RE	https://codeforces.com/contest/1009/problem/B
 	在包含了<bits/stdc++.h>的时候定义与y0,y1,yn等变量会报错（某些时候）lanuage/c++/InterestingError.cpp
+	CF 1011C 神秘CE（无法重现）
 
 模板收集：
 	线段树：

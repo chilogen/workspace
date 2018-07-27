@@ -43,3 +43,6 @@ test.h
 course
 duplicate
 *cmake-build-debug/
+*tmp
+*latex
+*waiting
