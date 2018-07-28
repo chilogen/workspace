@@ -3,7 +3,7 @@
 	大数模板				check
 	中国剩余定理
 算法：
-	后缀数组
+	后缀数组				check
 	快速傅里叶变换			check
 	树链剖分				check
  	博弈论
@@ -13,6 +13,7 @@
 		dinic			check
 		ISAP
 		预流推进
+		最小费用最大流		check
 	图同构
 	带花树
 	随机化算法

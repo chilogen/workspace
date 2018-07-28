@@ -40,6 +40,7 @@ void build_sa(int m)
         }
         if (p >= n) break;
         m = p;
+        cout<<endl;
     }
 }
 int cmp_suffix(char *pattern, int p)
@@ -89,7 +90,6 @@ int RMQ(int L , int R)
 }
 int main()
 {
-    char query[1005];
     scanf("%s", s);
     n = strlen(s);
     build_sa('z' + 1 );
