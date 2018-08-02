@@ -56,6 +56,7 @@
 	day8 f
 	day9 all
 	day10
+	day11 b,h
 	Gym 101234A(超时)
 	treap				check
 
@@ -64,6 +65,8 @@
 	sort中cmp函数中内容出现矛盾会造成无限循环导致RE	https://codeforces.com/contest/1009/problem/B
 	在包含了<bits/stdc++.h>的时候定义与y0,y1,yn等变量会报错（某些时候）lanuage/c++/InterestingError.cpp
 	CF 1011C 神秘CE（无法重现）
+	day12 H	不先把所有M加入队列的话，会出现一个M被别的点在BFS过程中包住的情况，导致该点没有完全拓展
+	round(x)返回值类型与x相同，要么强制转换，要么用  int a=x+0.5;
 
 模板收集：
 	线段树：
