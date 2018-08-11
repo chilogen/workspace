@@ -38,10 +38,12 @@
 		通过乘低维矩阵优化乘法复杂度（随机化方法判相等）
 		图上路径方案数的问题（上方构造题的HDU 5332
 		递推式快速求解
+		线性组合
+		循环矩阵的乘积仍是循环矩阵
 	字典树空间优化
 	倍增算法
 	动态规划：
-		背包九讲
+		背包九讲			check
 		树型DP
 		数位DP
 		DP优化
@@ -60,13 +62,15 @@
 	Gym 101234A(超时)
 	treap				check
 
-巨坑：
+坑：
 	字符串的find在某些oj上会错误	Gym 101341B 
 	sort中cmp函数中内容出现矛盾会造成无限循环导致RE	https://codeforces.com/contest/1009/problem/B
 	在包含了<bits/stdc++.h>的时候定义与y0,y1,yn等变量会报错（某些时候）lanuage/c++/InterestingError.cpp
 	CF 1011C 神秘CE（无法重现）
 	day12 H	不先把所有M加入队列的话，会出现一个M被别的点在BFS过程中包住的情况，导致该点没有完全拓展
 	round(x)返回值类型与x相同，要么强制转换，要么用  int a=x+0.5;
+	卡double,需要用 long double Gym 101848A
+	带坑套题：Gym 101848
 
 模板收集：
 	线段树：
