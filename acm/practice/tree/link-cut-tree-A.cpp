@@ -18,13 +18,13 @@ struct linkcutree{
 		edges[x].push_back((Edge){x,y,z});
 	}
 
-	Int dfs1(Int x,Int f,Int d){
-		fat[x]=f;dep[x]=d;
+	Int dfs1(Int x,Int f){
+		fat[x]=f;dep[x]=dep[f]+1;
 		size[x]=1;son[x]=-1;
 		Int maxson=-1;
 		vector<Edge>::iterator e=edges[x].begin();
 		while(e!=edges[x].end()){
-			size[x]+=dfs1(e->v,e->u,d+1);
+			size[x]+=dfs1(e->v,e->u);
 			if(size[e->v]>maxson){
 				maxson=size[e->v];
 				son[x]=e->v;
@@ -47,7 +47,8 @@ struct linkcutree{
 	}
 
 	Int LCA(Int x,Int y){
-		dfs1(1,1,0);
+		dep[1]=-1;
+		dfs1(1,1);
 		dfs2(1,1);
 		while(top[x]!=top[y]){
 			if(dep[top[x]]<dep[top[y]])swap(x,y);

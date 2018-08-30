@@ -47,6 +47,21 @@
 		树型DP
 		数位DP
 		DP优化
+		轮廓线动态规划
+
+	杜教筛、洲阁筛
+	https://magolor.github.io/2018/08/05/blog-01.html
+	problem archieve
+	https://vjudge.net/article/438
+	可持久化数据结构：
+		https://blog.csdn.net/u014609452/article/details/51418990
+		线段树(主席树)
+		字典树			check
+		平衡树
+		块状链表
+		并查集
+	点分治、边分治
+		
 
 
 复习：
@@ -86,7 +101,8 @@
 			SGX
 DSN18-endbox
 SGX配置
-设计模式
+https://github.com/google/googletest		单元测试
+https://github.com/log4cplus/log4cplus		程序日志
 
 
 			游戏
@@ -115,6 +131,7 @@ Pia路由
 Q#(os->tech)
 爬虫
 F1
+IAC演讲视频（收藏夹/favority）
 
 
 
