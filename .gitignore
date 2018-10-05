@@ -40,6 +40,7 @@ test.h
 ./_pycache
 ./try
 ./cmake-build-debug
+linux-4.18.11/
 course
 duplicate
 *cmake-build-debug/

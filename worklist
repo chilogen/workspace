@@ -61,7 +61,11 @@
 		块状链表
 		并查集
 	点分治、边分治
-		
+		bzoj 4016
+		poj 1741		check
+		hdu 4871
+		hdu 4670
+		hdu 4456
 
 
 复习：
@@ -95,18 +99,9 @@
 		一维+二维
 	主席树
 	splay
-	kmp
-	BellmanFord			check
-			
-			SGX
-DSN18-endbox
-SGX配置
-https://github.com/google/googletest		单元测试
-https://github.com/log4cplus/log4cplus		程序日志
 
 
 			游戏
-XPlane Linux 测试
 FCTM
 Kerbal KRPC 测试
 Kerbal user's guide: an easy way to .....
@@ -119,6 +114,11 @@ kali 高级渗透
 有趣的二进制
 无线网络安全
 加密与解密
+
+《网络信息安全的真相》(secrets and lies:Digital Security in a NetWorked World) 布鲁斯*施奈儿　　机械工业出版社
+《密码故事》(The Code Book:The history and exploration)　西蒙*辛格 海南出版社
+
+
 
 
 			树莓派

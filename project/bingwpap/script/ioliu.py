@@ -80,4 +80,4 @@ def Getdescription(url,filename,textpath):
 					f.write('\n')
 	shutil.move(filename,textpath)
 
-GetAllPic(1920,1080,2)
+GetAllPic(1920,1080,5)
