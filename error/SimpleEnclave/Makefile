@@ -182,15 +182,11 @@ enclave_u.o: enclave_u.c
 	@$(CC) $(App_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
-appfun.o: appfun.c
-	@$(CC) $(App_C_Flags) -c $< -o $@
-	@echo "CC   <=  $<"
-
 app.o: app.cpp
 	@$(CXX) $(App_Cpp_Flags) -c $< -o $@ 
 	@echo "CXX  <=  $<"
 
-$(App_Name): appfun.o app.o enclave_u.o
+$(App_Name): app.o enclave_u.o
 	@$(CXX) $^ -o $@ $(App_Link_Flags)
 	@echo "LINK =>  $@"
 
