@@ -1,0 +1,2 @@
+/usr/bin/ar qc libenclave_untrusted.a  CMakeFiles/enclave_untrusted.dir/enclave_u.o
+/usr/bin/ranlib libenclave_untrusted.a
