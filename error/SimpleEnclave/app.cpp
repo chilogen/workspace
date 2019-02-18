@@ -10,17 +10,16 @@ public:
     sgx_launch_token_t _token = {0};
     sgx_enclave_id_t _eid;
     sgx_ra_context_t _ctx;
-    void init_enclave();
     bool request(uint8_t *src, uint32_t srcLen, uint8_t *cmac);
     //will set _ctx here
     //void do_attestation();
-}x;
+};
 bool testClass::request(uint8_t *src, uint32_t srcLen, uint8_t *cmac) {
     sgx_status_t retval,status;
     status = ecall_calcmac(_eid, &retval,&_ctx, SGX_RA_KEY_SK, src, srcLen, cmac);
     return true;
 }
-void testClass::init_enclave(){
+void init_enclave(){
     sgx_enclave_id_t global_eid;
 
     sgx_launch_token_t token={0};
@@ -37,6 +36,7 @@ void testClass::init_enclave(){
 }
 
 int main(){
-    x.init_enclave();
+    testClass x;
+    init_enclave();
     return 0;
 }

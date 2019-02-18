@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/app.dir/app.o  -o app  -L/opt/intel/sgxsdk/lib64  -L/home/a/workspace/error/SimpleEnclave/build -Wl,-rpath,/opt/intel/sgxsdk/lib64 libenclave_untrusted.a -lsgx_ukey_exchange -lsgx_urts -lsgx_uae_service -lpthread 

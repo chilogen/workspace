@@ -1,0 +1,4 @@
+/home/a/workspace/error/SimpleEnclave/build/CMakeFiles/rebuild_cache.dir
+/home/a/workspace/error/SimpleEnclave/build/CMakeFiles/enclave_untrusted.dir
+/home/a/workspace/error/SimpleEnclave/build/CMakeFiles/edit_cache.dir
+/home/a/workspace/error/SimpleEnclave/build/CMakeFiles/app.dir
