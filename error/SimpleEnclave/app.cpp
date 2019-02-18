@@ -12,18 +12,14 @@ public:
     sgx_ra_context_t _ctx;
     void init_enclave();
     bool request(uint8_t *src, uint32_t srcLen, uint8_t *cmac);
-
     //will set _ctx here
     //void do_attestation();
 }x;
-
-
 bool testClass::request(uint8_t *src, uint32_t srcLen, uint8_t *cmac) {
     sgx_status_t retval,status;
     status = ecall_calcmac(_eid, &retval,&_ctx, SGX_RA_KEY_SK, src, srcLen, cmac);
     return true;
 }
-
 void testClass::init_enclave(){
     sgx_enclave_id_t global_eid;
 
@@ -38,7 +34,6 @@ void testClass::init_enclave(){
         printf("%08x\n",ret);
         exit(1);
     }
-
 }
 
 int main(){
